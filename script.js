@@ -2,7 +2,7 @@ var annotations = [
   {
     x: 4.4,
     y: 5.7,
-    path: 'M -5 -5 L -20 -20',
+    path: 'M-5,-5L-20,-20',
     text: 'Green Flower',
     textOffset: [-60, -30]
   }
