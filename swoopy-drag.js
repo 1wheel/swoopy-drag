@@ -37,7 +37,7 @@ d3.swoopyDrag = function(){
         var circles = parentSel.selectAll('circle').data()
         var path = ''
         circles.forEach(function(d){
-          path = path + d.type + d.pos
+          path = path + '    ' + d.type + d.pos 
         })
 
         console.log(path)
@@ -77,7 +77,7 @@ d3.swoopyDrag = function(){
         if (curChar == ',') commas++
         if (curChar == 'L' || curChar == 'C' || commas == 2){
           points.push({pos: d.path.substr(i, j - 1), type: type})
-          type = curChar != ',' ? curChar : ''
+          type = curChar
           i = j + 1
           commas = 0
         }
