@@ -68,18 +68,27 @@ d3.swoopyDrag = function(){
     annotationSel.dataAppend(function(d){
       var points = []
 
+      console.log(d.path)
+
       var i = 1
       var type = 'M'
       var commas = 0
 
       for (var j = 1; j < d.path.length; j++){
         var curChar = d.path[j]
-        if (curChar == ',') commas++
+        console.log(j, curChar)
+        if (curChar == ',') console.log('is a comma') && commas++
+        console.log(commas, ' num commas')
         if (curChar == 'L' || curChar == 'C' || commas == 2){
+          console.log(type, d.path.substr(i, j - 1), commas)
+
+
+
           points.push({pos: d.path.substr(i, j - 1), type: type})
           type = curChar
           i = j + 1
           commas = 0
+
         }
       }
 
