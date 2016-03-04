@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body{
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+svg{
+  overflow: visible;
+}
+
+
+text {
+  font-size: 12px;
+  /*pointer-events: none;*/
+  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+}
+
+.axis line,
+.axis path {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+
+
+.annotation path{
+  fill: none;
+  stroke: black;
+}
+
+
+
+div.tooltip {
+  top: -1000px;
+  position: absolute;
+  padding: 10px;
+  background: rgba(255, 255, 255, .90);
+  border: 1px solid lightgray;
+  pointer-events: none;
+}
+.tooltip-hidden{
+  opacity: 0;
+}
+
+</style>
+
+<body>
+
+<h1>Sepal Width v. Sepal Length</h1>
+<div id='graph'></div>
+
+<div class='tooltip'></div>
+
+
+</body>
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.js"></script>
+
+<script src='d3-jetpack.js'></script>
+<script src='d3-starterkit.js'></script>
+
+<script src='swoopy-drag.js'></script>
+<script src='script.js'></script>
