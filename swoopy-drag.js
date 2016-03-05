@@ -76,15 +76,14 @@ d3.swoopyDrag = function(){
 
       for (var j = 1; j < d.path.length; j++){
         var curChar = d.path[j]
-        console.log(j, curChar)
-        if (curChar == ',') console.log('is a comma') && commas++
-        console.log(commas, ' num commas')
+        if (curChar == ',') commas++
+        // if (curChar == ',') debugger
         if (curChar == 'L' || curChar == 'C' || commas == 2){
-          console.log(type, d.path.substr(i, j - 1), commas)
+          console.log(type, d.path.slice(i, j), commas)
 
 
 
-          points.push({pos: d.path.substr(i, j - 1), type: type})
+          points.push({pos: d.path.slice(i, j), type: type})
           type = curChar
           i = j + 1
           commas = 0
@@ -92,7 +91,7 @@ d3.swoopyDrag = function(){
         }
       }
 
-      points.push({pos: d.path.substr(i, j - 1), type: type})
+      points.push({pos: d.path.slice(i, j), type: type})
 
       console.log(points)
       return points

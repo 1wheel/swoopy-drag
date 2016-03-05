@@ -1,18 +1,18 @@
 var annotations = [
-  // {
-  //   x: 4.4,
-  //   y: 5.7,
-  //   path: 'M-5,-5L-20,-20',
-  //   text: 'Green Flower',
-  //   textOffset: [-60, -30]
-  // },
   {
-    x: 3.4,
-    y: 7.7,
-    path: 'M110,50C670,60,250,440,530,415',
-    text: 'Red Flower',
+    x: 4.4,
+    y: 5.7,
+    path: 'M-5,-5L-20,-20',
+    text: 'Green Flower',
     textOffset: [-60, -30]
   },
+  {
+    "x": 3.8,
+    "y": 7.7,
+    "path": "M-71,-45C-72,4,-48,11,-15,2",
+    "text": "Red Flower",
+    "textOffset": [-139,-44]
+  }
 ]
 
 var annotationText = d3.select('body').append('pre')
