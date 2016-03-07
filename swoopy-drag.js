@@ -5,24 +5,21 @@ d3.swoopyDrag = function(){
   var annotations = []
   var annotationSel
 
-  var dispatch = d3.dispatch('drag')
-
   var dragable = false
 
-  var startPos = [0, 0]
+  var dispatch = d3.dispatch('drag')
+
   var textDrag = d3.behavior.drag()
       .on('drag', function(d){
         var x = d3.event.x
         var y = d3.event.y
         d.textOffset = [x, y].map(Math.round)
 
-        d3.select(this).translate(d.textOffset)
+        d3.select(this).call(translate, d.textOffset)
 
         dispatch.drag()
       })
       .origin(function(d){ return {x: d.textOffset[0], y: d.textOffset[1]} })
-
-
 
   var circleDrag = d3.behavior.drag()
       .on('drag', function(d){
@@ -38,7 +35,7 @@ d3.swoopyDrag = function(){
         })
 
         parentSel.select('path').attr('d', path).datum().path = path
-        d3.select(this).translate(d.pos)
+        d3.select(this).call(translate, d.pos)
 
         dispatch.drag()
       })
@@ -47,10 +44,10 @@ d3.swoopyDrag = function(){
 
   var rv = function(sel){
     annotationSel = sel.dataAppend(annotations, 'g.annotation')
-        .translate(function(d){ return [x(d.x), y(d.y)] })
+        .call(translate, function(d){ return [x(d.x), y(d.y)] })
     
     annotationSel.append('text')
-        .translate(ƒ('textOffset'))
+        .call(translate, ƒ('textOffset'))
         .text(ƒ('text'))
         .call(textDrag)
 
@@ -84,7 +81,7 @@ d3.swoopyDrag = function(){
       return points
     }, 'circle')
         .attr({r: 3, fill: '#ddd', stroke: '#000'})
-        .translate(ƒ('pos'))
+        .call(translate, ƒ('pos'))
         .call(circleDrag)
 
     dispatch.drag()
@@ -117,5 +114,10 @@ d3.swoopyDrag = function(){
   return d3.rebind(rv, dispatch, 'on')
 
 
-  function translate(){}
+  function translate(sel, pos){
+    sel.attr('transform', function(d){
+      var posStr = typeof(pos) == 'function' ? pos(d) : pos
+      return 'translate(' + posStr + ')' 
+    }) 
+  }
 }
