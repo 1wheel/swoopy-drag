@@ -1,27 +1,34 @@
 var annotations = [
   {
-    x: 4.4,
-    y: 5.7,
-    path: 'M-5,-5L-20,-20',
-    text: 'Green Flower',
-    textOffset: [-60, -30],
+    "x": 4.4,
+    "y": 5.7,
+    "path": "M-49,-61L-18,-22",
+    "text": "Green Flower",
+    "textOffset": [
+      -55,
+      -73
+    ]
   },
   {
     "x": 3.8,
     "y": 7.7,
-    "path": "M-71,-45C-72,4,-48,11,-15,2",
+    "path": "M-103,-50C-106,-1,-62,-19,-19,-21",
     "text": "Red Flower",
-    "textOffset": [-139,-44]
-  },
+    "textOffset": [
+      -100,
+      -57
+    ]
+  }
 ]
 
+
 var annotationText = d3.select('body').append('pre')
-    .style('margin-top', '300px')
+    .style('margin-top', '200px')
 
 
 
 d3.tsv('data.tsv', function(data){
-  c = d3.conventions({parentSel: d3.select('#graph')})
+  c = d3.conventions({parentSel: d3.select('#graph'), width: 600})
 
   c.x.domain(d3.extent(data, ƒ('sepalWidth')) ).nice()
   c.y.domain(d3.extent(data, ƒ('sepalLength'))).nice()
@@ -54,9 +61,23 @@ d3.tsv('data.tsv', function(data){
       .on('drag', function(){
         annotationText.text(JSON.stringify(annotations, null, 2))
       })
-  c.svg.append('g.desktop').call(swoopy)
+  c.svg.append('g.desktop')
+      .call(swoopy)
+    .selectAll('path')
+      .attr('marker-end', 'url(#arrow)')
 
-
+  c.svg.append("marker")
+      .attr("id", "arrow")
+      .attr("viewBox", "-10 -10 20 20")
+      .attr("refX", 0)
+      .attr("refY", 0)
+      .attr("markerWidth", 20)
+      .attr("markerHeight", 20)
+      .attr("stroke-width", 1)
+      .attr("orient", "auto")
+    .append("polyline")
+      .attr("stroke-linejoin", "bevel")
+      .attr("points", "-6.75,-6.75 0,0 -6.75,6.75");
 })
 
 

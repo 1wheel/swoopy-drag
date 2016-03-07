@@ -80,14 +80,12 @@ d3.swoopyDrag = function(){
       console.log(points)
       return points
     }, 'circle')
-        .attr({r: 3, fill: '#ddd', stroke: '#000'})
+        .attr({r: 6, fill: 'rgba(0,0,0,0)', stroke: '#333', 'stroke-dasharray': '2 2'})
         .call(translate, ƒ('pos'))
         .call(circleDrag)
 
     dispatch.drag()
   }
-
-
 
 
   rv.annotations = function(_x){
