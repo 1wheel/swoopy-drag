@@ -9,50 +9,40 @@ d3.swoopyDrag = function(){
 
   var dragable = false
 
+  var startPos = [0, 0]
   var textDrag = d3.behavior.drag()
       .on('drag', function(d){
-        var pos = d3.mouse(this.parentNode)
-        var x = pos[0] 
-        var y = pos[1] 
-        var offset = [x, y].map(Math.round)
+        var x = d3.event.x
+        var y = d3.event.y
+        d.textOffset = [x, y].map(Math.round)
 
-        console.log("sdfsdf")
-
-        d3.select(this).translate(offset)
-        d3.select(this).datum().textOffset = offset
+        d3.select(this).translate(d.textOffset)
 
         dispatch.drag()
       })
-      .origin(function(d){
-        return d.textOffset
-        return {x: d.textOffset[0], y: d.textOffset[1]}
-      })
+      .origin(function(d){ return {x: d.textOffset[0], y: d.textOffset[1]} })
+
 
 
   var circleDrag = d3.behavior.drag()
       .on('drag', function(d){
-        var pos = d3.mouse(this.parentNode)
-        var x = pos[0] 
-        var y = pos[1] 
-        var offset = [x, y].map(Math.round)
+        var x = d3.event.x
+        var y = d3.event.y
+        d.pos = [x, y].map(Math.round)
 
         var parentSel = d3.select(this.parentNode)
 
-        var circles = parentSel.selectAll('circle').data()
         var path = ''
-        circles.forEach(function(d){
+        parentSel.selectAll('circle').each(function(d){
           path = path + '' + d.type  + d.pos 
         })
 
         parentSel.select('path').attr('d', path).datum().path = path
-        d3.select(this).translate(offset).datum().pos = offset
+        d3.select(this).translate(d.pos)
 
         dispatch.drag()
       })
-      // .origin(function(d){
-      //   return d.textOffset
-      //   return {x: d.textOffset[0], y: d.textOffset[1]}
-      // })
+      .origin(function(d){ return {x: d.pos[0], y: d.pos[1]} })
 
 
   var rv = function(sel){
@@ -82,15 +72,15 @@ d3.swoopyDrag = function(){
         var curChar = d.path[j]
         if (curChar == ',') commas++
         if (curChar == 'L' || curChar == 'C' || commas == 2){
-          points.push({pos: d.path.slice(i, j), type: type})
+          points.push({pos: d.path.slice(i, j).split(','), type: type})
           type = curChar
           i = j + 1
           commas = 0
         }
       }
 
-      points.push({pos: d.path.slice(i, j), type: type})
-
+      points.push({pos: d.path.slice(i, j).split(','), type: type})
+      console.log(points)
       return points
     }, 'circle')
         .attr({r: 3, fill: '#ddd', stroke: '#000'})
@@ -125,4 +115,7 @@ d3.swoopyDrag = function(){
   }
 
   return d3.rebind(rv, dispatch, 'on')
+
+
+  function translate(){}
 }

@@ -11,7 +11,7 @@ var annotations = [
     "y": 7.7,
     "path": "M-71,-45C-72,4,-48,11,-15,2",
     "text": "Red Flower",
-    "textOffset": '-139,-44'
+    "textOffset": [-139,-44]
   },
 ]
 
