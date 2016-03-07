@@ -5,6 +5,10 @@ d3.swoopyDrag = function(){
   var annotations = []
   var annotationSel
 
+  var dispatch = d3.dispatch('drag')
+
+  var dragable = false
+
   var textDrag = d3.behavior.drag()
       .on('drag', function(d){
         var pos = d3.mouse(this.parentNode)
@@ -17,7 +21,7 @@ d3.swoopyDrag = function(){
         d3.select(this).translate(offset)
         d3.select(this).datum().textOffset = offset
 
-        update()
+        dispatch.drag()
       })
       .origin(function(d){
         return d.textOffset
@@ -37,15 +41,13 @@ d3.swoopyDrag = function(){
         var circles = parentSel.selectAll('circle').data()
         var path = ''
         circles.forEach(function(d){
-          path = path + '    ' + d.type + d.pos 
+          path = path + '' + d.type  + d.pos 
         })
-
-        console.log(path)
 
         parentSel.select('path').attr('d', path).datum().path = path
         d3.select(this).translate(offset).datum().pos = offset
 
-        update()
+        dispatch.drag()
       })
       // .origin(function(d){
       //   return d.textOffset
@@ -65,10 +67,12 @@ d3.swoopyDrag = function(){
     annotationSel.append('path')
         .attr('d', ƒ('path'))
 
+    if (!dragable) return
+
+    annotationSel.style('cursor', 'pointer')
+
     annotationSel.dataAppend(function(d){
       var points = []
-
-      console.log(d.path)
 
       var i = 1
       var type = 'M'
@@ -77,52 +81,48 @@ d3.swoopyDrag = function(){
       for (var j = 1; j < d.path.length; j++){
         var curChar = d.path[j]
         if (curChar == ',') commas++
-        // if (curChar == ',') debugger
         if (curChar == 'L' || curChar == 'C' || commas == 2){
-          console.log(type, d.path.slice(i, j), commas)
-
-
-
           points.push({pos: d.path.slice(i, j), type: type})
           type = curChar
           i = j + 1
           commas = 0
-
         }
       }
 
       points.push({pos: d.path.slice(i, j), type: type})
 
-      console.log(points)
       return points
     }, 'circle')
-        .attr('r', 3)
+        .attr({r: 3, fill: '#ddd', stroke: '#000'})
         .translate(ƒ('pos'))
         .call(circleDrag)
 
-    update()
+    dispatch.drag()
   }
 
 
-  function update(){
-    annotationText.text(JSON.stringify(annotations, null, 2))
-  }
+
 
   rv.annotations = function(_x){
-    if (!_x) return annotations
+    if (typeof(_x) == 'undefined') return annotations
     annotations = _x
     return rv
   }
   rv.x = function(_x){
-    if (!_x) return x
+    if (typeof(_x) == 'undefined') return x
     x = _x
     return rv
   }
   rv.y = function(_x){
-    if (!_x) return y
+    if (typeof(_x) == 'undefined') return y
     y = _x
     return rv
   }
+  rv.dragable = function(_x){
+    if (typeof(_x) == 'undefined') return dragable
+    dragable = _x
+    return rv
+  }
 
-  return rv
+  return d3.rebind(rv, dispatch, 'on')
 }

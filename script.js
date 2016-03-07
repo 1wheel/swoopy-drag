@@ -4,15 +4,15 @@ var annotations = [
     y: 5.7,
     path: 'M-5,-5L-20,-20',
     text: 'Green Flower',
-    textOffset: [-60, -30]
+    textOffset: [-60, -30],
   },
   {
     "x": 3.8,
     "y": 7.7,
     "path": "M-71,-45C-72,4,-48,11,-15,2",
     "text": "Red Flower",
-    "textOffset": [-139,-44]
-  }
+    "textOffset": '-139,-44'
+  },
 ]
 
 var annotationText = d3.select('body').append('pre')
@@ -47,11 +47,15 @@ d3.tsv('data.tsv', function(data){
 
 
   swoopy = d3.swoopyDrag()
-      .annotations(annotations)
+      .dragable(true)
       .x(c.x)
       .y(c.y)
+      .annotations(annotations)
+      .on('drag', function(){
+        annotationText.text(JSON.stringify(annotations, null, 2))
+      })
+  c.svg.append('g.desktop').call(swoopy)
 
-  c.svg.append('g').call(swoopy)
 
 })
 
