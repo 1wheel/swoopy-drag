@@ -61,23 +61,42 @@ d3.tsv('data.tsv', function(data){
       .on('drag', function(){
         annotationText.text(JSON.stringify(annotations, null, 2))
       })
-  c.svg.append('g.annotations')
+
+  swoopySel = c.svg.append('g.annotations')
       .call(swoopy)
-    .selectAll('path')
+
+  swoopySel.selectAll('path')
       .attr('marker-end', 'url(#arrow)')
 
-  c.svg.append("marker")
-      .attr("id", "arrow")
-      .attr("viewBox", "-10 -10 20 20")
-      .attr("refX", 0)
-      .attr("refY", 0)
-      .attr("markerWidth", 20)
-      .attr("markerHeight", 20)
-      .attr("stroke-width", 1)
-      .attr("orient", "auto")
-    .append("polyline")
-      .attr("stroke-linejoin", "bevel")
-      .attr("points", "-6.75,-6.75 0,0 -6.75,6.75");
+  swoopySel.selectAll('text')
+      .each(function(d){
+        d3.select(this)
+            .text('')
+            .tspans(d.text.split(' '))
+      })
+
+  c.svg.append('marker')
+      .attr('id', 'arrow')
+      .attr('viewBox', '-10 -10 20 20')
+      .attr('markerWidth', 20)
+      .attr('markerHeight', 20)
+      .attr('orient', 'auto')
+    .append('polyline')
+      .attr('points', '-6.75,-6.75 0,0 -6.75,6.75')
+
+  // c.svg.append('marker')
+  //     .attr('id', 'arrow')
+  //     .attr('viewBox', '-10 -10 20 20')
+  //     // .attr('refX', 0)
+  //     // .attr('refY', 0)
+  //     .attr('markerWidth', 20)
+  //     .attr('markerHeight', 20)
+  //     // .attr('stroke-width', 1)
+  //     .attr('orient', 'auto')
+  //   .append('polyline')
+  //     // .attr('stroke-linejoin', 'bevel')
+  //     .attr('points', '-6.75,-6.75 0,0 -6.75,6.75');
+
 })
 
 
