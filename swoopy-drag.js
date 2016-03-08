@@ -43,13 +43,13 @@ d3.swoopyDrag = function(){
 
 
   var rv = function(sel){
-    annotationSel = sel.dataAppend(annotations, 'g.annotation')
-        .call(translate, function(d){ return [x(d.x), y(d.y)] })
+    annotationSel = sel.selectAll('g')
+      .data(annotations).enter().append('g')
+        .call(translate, function(d){ return [x(d), y(d)] })
     
-    annotationSel.append('text')
+    var textSel = annotationSel.append('text')
         .call(translate, ƒ('textOffset'))
         .text(ƒ('text'))
-        .call(textDrag)
 
     annotationSel.append('path')
         .attr('d', ƒ('path'))
@@ -57,8 +57,9 @@ d3.swoopyDrag = function(){
     if (!dragable) return
 
     annotationSel.style('cursor', 'pointer')
+    textSel.call(textDrag)
 
-    annotationSel.dataAppend(function(d){
+    annotationSel.selectAll('circle').data(function(d){
       var points = []
 
       var i = 1
@@ -79,8 +80,8 @@ d3.swoopyDrag = function(){
       points.push({pos: d.path.slice(i, j).split(','), type: type})
       console.log(points)
       return points
-    }, 'circle')
-        .attr({r: 6, fill: 'rgba(0,0,0,0)', stroke: '#333', 'stroke-dasharray': '2 2'})
+    }).enter().append('circle')
+        .attr({r: 8, fill: 'rgba(0,0,0,0)', stroke: '#333', 'stroke-dasharray': '2 2'})
         .call(translate, ƒ('pos'))
         .call(circleDrag)
 
