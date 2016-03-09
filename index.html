@@ -107,7 +107,8 @@ var swoopy = d3.swoopyDrag()
       annotationText.text(JSON.stringify(annotations, null, 2))
     })
 
-d3.tsv('lib/data.tsv', function(data){
+d3.tsv('lib/data.tsv', function(res){
+  data = res
 
   c.x.domain(d3.extent(data, ƒ('sepalWidth')) ).nice()
   c.y.domain(d3.extent(data, ƒ('sepalLength'))).nice()
