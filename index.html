@@ -90,12 +90,6 @@ var annotations = [
   }
 ]
 
-
-var annotationText = d3.select('body').append('pre')
-    .style('margin-top', '200px')
-
-
-
 var c = d3.conventions({parentSel: d3.select('#graph'), width: 600})
 
 var swoopy = d3.swoopyDrag()
@@ -106,6 +100,10 @@ var swoopy = d3.swoopyDrag()
     .on('drag', function(){
       annotationText.text(JSON.stringify(annotations, null, 2))
     })
+
+var annotationText = d3.select('body').append('pre')
+    .style('margin-top', '20px')
+
 
 d3.tsv('lib/data.tsv', function(res){
   data = res
