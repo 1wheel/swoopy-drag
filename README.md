@@ -1,12 +1,12 @@
 # swoopy-drag
 
-## API
+### [Demo/Documentation](http://1wheel.github.io/swoopy-drag/)
 
+### API
 
+### Responsive
 
-## Responsive
-
-## Arrowheads
+### Arrowheads
 
 SVG has native support for arrowheads, but they can be a little fiddly to get working. First, we need to add a `marker` element to the page the describes the shape of the arrow:
 
@@ -26,24 +26,27 @@ Next, we select
       .selectAll('path')
         .attr('marker-end', 'url(#arrow)')
 
-
-
 MDN 
 
-## Text wrap
+### Text wrap
 
 
+### Examples
 
-## todo
+http://roadtolarissa.com/nba-win-loss/
+
+http://roadtolarissa.com/nba-minutes/
+
+### see also
+
+https://github.com/bizweekgraphics/swoopyarrows
+
+http://twitter.github.io/labella.js/
+
+### todo
 - [x] switch d3.svg.line style data
 - [x] remove jetpack
 - [ ] click to edit text
 - [ ] incorperate tspans
 - [ ] arrowhead repo??
 - [ ] make gh-pages demo
-
-## see also
-
-https://github.com/bizweekgraphics/swoopyarrows
-
-http://twitter.github.io/labella.js/
