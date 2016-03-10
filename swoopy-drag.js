@@ -5,7 +5,7 @@ d3.swoopyDrag = function(){
   var annotations = []
   var annotationSel
 
-  var dragable = false
+  var draggable = false
 
   var dispatch = d3.dispatch('drag')
 
@@ -54,7 +54,7 @@ d3.swoopyDrag = function(){
     annotationSel.append('path')
         .attr('d', ƒ('path'))
 
-    if (!dragable) return
+    if (!draggable) return
 
     annotationSel.style('cursor', 'pointer')
     textSel.call(textDrag)
@@ -104,9 +104,9 @@ d3.swoopyDrag = function(){
     y = _x
     return rv
   }
-  rv.dragable = function(_x){
-    if (typeof(_x) == 'undefined') return dragable
-    dragable = _x
+  rv.draggable = function(_x){
+    if (typeof(_x) == 'undefined') return draggable
+    draggable = _x
     return rv
   }
 

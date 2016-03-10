@@ -93,7 +93,7 @@ var annotations = [
 var c = d3.conventions({parentSel: d3.select('#graph'), width: 600})
 
 var swoopy = d3.swoopyDrag()
-    .dragable(true)
+    .draggable(true)
     .x(ƒ('x', c.x))
     .y(ƒ('y', c.y))
     .annotations(annotations)
