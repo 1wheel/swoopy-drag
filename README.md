@@ -27,11 +27,13 @@ and turns them into arrows and labels:
         .y(function(d){ return yScale(d.yVal) })
         .annotations(annotations)
         
-    svg.append('g.annotations').call(swoopy)
+    var swoopySel = svg.append('g')
+        .classed('annotations')
+        .call(swoopy)
+
+Just like `d3.svg.line`, `x` and `y` take functions that 
 
 TKTK image of static arrows
-
-Just like with `d3.svg.line`, `x` and `y` take functions that 
 
 Setting `draggable` to true adds control points to the path strings and enables label dragging.
 
@@ -71,13 +73,19 @@ SVG has native support for [arrowheads](https://developer.mozilla.org/en-US/docs
 
 Next, select paths in each annotation and set their `marker-end` attribute:
 
-    swoopySel = svg.append('g.annotations')
-        .call(swoopy)
-      .selectAll('path')
+    swoopySel.selectAll('path')
         .attr('marker-end', 'url(#arrow)')
 
 ### Text wrap
 
+Multiline text can be added with d3-jetpack. Select all of the `text` elements, clear the existing text, then use `d3.wordwrap` and `tspans` from d3-jetpack add wrapped text:
+
+    swoopySel.selectAll('text')
+        .each(function(d){
+          d3.select(this)
+              .text('')                        //remove initial
+              .tspans(d3.wordwrap(d.text, 20)) //20 char wrap
+        })  
 
 ### API Reference
 
@@ -122,6 +130,10 @@ http://roadtolarissa.com/nba-minutes/
 https://github.com/bizweekgraphics/swoopyarrows
 
 http://twitter.github.io/labella.js/
+
+Export with svgcrowbar and add labels/paths with illustator. This is tricky to make responsive - transform scale or `viewbox` can keep the labels in the correct position, but shrink the font size. 
+
+AItoHTML does a great job of handling multiple annotation sizes but is tricky to make interactive.
 
 ### Todo
 - [x] switch d3.svg.line style data
