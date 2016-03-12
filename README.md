@@ -1,7 +1,8 @@
 # swoopyDrag
 
-    The annotation layer is the most important thing we do
-    *- Amanda Cox -*
+> The annotation layer is the most important thing we do
+
+*- Amanda Cox -*
 
 ### [Demo/Documentation](http://1wheel.github.io/swoopy-drag/)
 

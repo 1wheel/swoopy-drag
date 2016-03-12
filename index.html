@@ -3,7 +3,17 @@
 <style>
 
 body{
-  font-family: Helvetica, Arial, sans-serif;
+  width: 900px;
+  margin: 0px auto;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+h1{
+}
+
+h1, h3{
+  margin: 50px;
+  text-align: center;
 }
 
 svg{
@@ -46,12 +56,85 @@ div.tooltip {
   opacity: 0;
 }
 
+
+
+#graph{
+  display: inline-block;
+  width: 500px;
+}
+#annotations-update{
+  display: inline-block;
+  width: 380px;
+  text-align: top;
+  position: relative;
+  top: -50px;
+  background: #eee;
+  padding-left: 10px;
+}
+
+.mono{
+  font-family: monospace;
+}
+
+p{
+  max-width: 600px;
+  margin: 0px auto;
+  padding-bottom: 30px;
+  font-size: 15px;
+}
+
+
+
+#resizable {
+    position: relative;
+    width: 300px;
+    height: 200px;
+    background: #eee;
+}
+
+#resizable .resizer {
+    position: absolute;
+    width: 10px;
+    top: 0;
+    bottom: 0;
+    right: -5px;
+    background: orange;
+    opacity: .5;
+    cursor: pointer;
+}
+
 </style>
 
 <body>
 
-<h1>Click and drag text and curves</h1>
-<div id='graph'></div>
+<h1><a href='https://github.com/1wheel/swoopy-drag'>swoop-drag.js</a></h1>
+<h3>Artisanal label placement for d3 graphics. </h3>
+
+<p>
+  <i>"The annotation layer is the most important thing we do"</i> -Amanda Cox
+</p>
+<p>
+  <span class='mono'>swoop-drag</span> helps you hand place annotations on d3 graphics. It takes an array of objects representing annotations and turns them into arrows and labels. Drag the text and control circles below to annotations.
+</p>
+
+
+
+
+<div>
+  <div id='graph'>
+  </div>
+  <div id='annotations-update'></div>
+</div>
+
+<h3>Responsive</h3>
+
+
+<div id="resizable">
+  <div class="resizer"></div>
+</div>
+
+
+
 
 <div class='tooltip'></div>
 
@@ -69,40 +152,49 @@ div.tooltip {
 
 var annotations = [
   {
-    "x": 4.4,
-    "y": 5.7,
+    "xVal": 4.4,
+    "yVal": 5.7,
     "path": "M-49,-61L-18,-22",
-    "text": "Green Flower",
+    "text": "Blue Flower",
     "textOffset": [
       -85,
       -77
     ]
   },
   {
-    "x": 3.8,
-    "y": 7.7,
+    "xVal": 3.8,
+    "yVal": 7.7,
     "path": "M-103,-50C-116,-12,-46,25,-8,-16",
-    "text": "Red Flower",
+    "text": "Green Flower",
     "textOffset": [
       -100,
       -57
     ]
+  },
+  {
+    "xVal": 2,
+    "yVal": 5,
+    "path": "M56,96C-29,93,86,43,11,4",
+    "text": "Orange Flower",
+    "textOffset": [
+      66,
+      95
+    ]
   }
 ]
 
-var c = d3.conventions({parentSel: d3.select('#graph'), width: 600})
+var c = d3.conventions({parentSel: d3.select('#graph'), width: 450})
 
 var swoopy = d3.swoopyDrag()
     .draggable(true)
-    .x(ƒ('x', c.x))
-    .y(ƒ('y', c.y))
+    .x(ƒ('xVal', c.x))
+    .y(ƒ('yVal', c.y))
     .annotations(annotations)
     .on('drag', function(){
-      annotationText.text(JSON.stringify(annotations, null, 2))
+      annotationText.text('var annotations = ' + JSON.stringify(annotations, null, 2))
     })
 
-var annotationText = d3.select('body').append('pre')
-    .style('margin-top', '20px')
+var annotationText = d3.select('#annotations-update').append('pre')
 
 
 d3.tsv('lib/data.tsv', function(res){
@@ -154,6 +246,37 @@ d3.tsv('lib/data.tsv', function(res){
     .append('polyline')
       .attr('points', '-6.75,-6.75 0,0 -6.75,6.75')
 
+
+  !(function(){
+    var resizable = d3.select('#resizable');
+    var resizer = resizable.select('.resizer');
+
+    var dragResize = d3.behavior.drag()
+        .on('drag', function() {
+          // Determine resizer position relative to resizable (parent)
+          x = d3.mouse(this.parentNode)[0];
+          
+          // Avoid negative or really small widths
+          x = Math.max(50, x);
+          
+          resizable.style('width', x + 'px');
+
+
+          c.x.range([0, x])
+
+          
+
+        })
+
+    resizer.call(dragResize);
+
+
+  })()
+
+})
+
+
+
   // c.svg.append('marker')
   //     .attr('id', 'arrow')
   //     .attr('viewBox', '-10 -10 20 20')
@@ -166,9 +289,4 @@ d3.tsv('lib/data.tsv', function(res){
   //   .append('polyline')
   //     // .attr('stroke-linejoin', 'bevel')
   //     .attr('points', '-6.75,-6.75 0,0 -6.75,6.75');
-
-})
-
-
-
 </script>
