@@ -251,6 +251,26 @@ d3.tsv('lib/data.tsv', function(res){
     var resizable = d3.select('#resizable');
     var resizer = resizable.select('.resizer');
 
+    var r = d3.conventions({parentSel: d3.select('#resizable'), width: 450})
+
+    r.x.domain(d3.extent(data, ƒ('sepalWidth')) ).nice()
+    r.y.domain(d3.extent(data, ƒ('sepalLength'))).nice()
+    r.drawAxis()
+
+    var circles = r.svg.dataAppend(data, 'circle')
+        .attr('cx', ƒ('sepalWidth', r.x))
+        .attr('cy', ƒ('sepalLength', r.y))
+        .attr('fill', ƒ('species', r.color))
+        .attr({r: 5, stroke: '#000'})
+        .call(d3.attachTooltip)
+
+
+    var swoopySel = r.svg.append('g.annotations')
+
+    swoopy.draggable(false)
+    swoopySel.call(swoopy)
+
+
     var dragResize = d3.behavior.drag()
         .on('drag', function() {
           // Determine resizer position relative to resizable (parent)
@@ -262,8 +282,16 @@ d3.tsv('lib/data.tsv', function(res){
           resizable.style('width', x + 'px');
 
 
+          r.x.range([0, x])
           c.x.range([0, x])
 
+          circles.attr('cx', ƒ('sepalWidth', r.x))
+
+          swoopySel.selectAll('*').remove()
+          swoopySel.call(swoopy)
+
+          r.selectAll('.axis').remove()
+          r.drawAxis()
           
 
         })
