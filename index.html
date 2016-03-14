@@ -87,9 +87,8 @@ p{
 
 #resizable {
     position: relative;
-    width: 300px;
-    height: 200px;
-    background: #eee;
+    width: 500px;
+    height: 520px;
 }
 
 #resizable .resizer {
@@ -97,8 +96,8 @@ p{
     width: 10px;
     top: 0;
     bottom: 0;
-    right: -5px;
-    background: orange;
+    right: -44px;
+    background: #ccc;
     opacity: .5;
     cursor: pointer;
 }
@@ -114,7 +113,7 @@ p{
   <i>"The annotation layer is the most important thing we do"</i> -Amanda Cox
 </p>
 <p>
-  <span class='mono'>swoop-drag</span> helps you hand place annotations on d3 graphics. It takes an array of objects representing annotations and turns them into arrows and labels. Drag the text and control circles below to annotations.
+  <span class='mono'>swoop-drag</span> helps you hand place annotations on d3 graphics. It takes an array of objects representing annotations and turns them into arrows and labels. Drag the text and control circles below to update the annotations array.
 </p>
 
 
@@ -154,7 +153,7 @@ var annotations = [
   {
     "xVal": 4.4,
     "yVal": 5.7,
-    "path": "M-49,-61L-18,-22",
+    "path": "M-49,-61L-6,-8",
     "text": "Blue Flower",
     "textOffset": [
       -85,
@@ -182,6 +181,17 @@ var annotations = [
     ]
   }
 ]
+
+var dragToResize = {
+    "xVal": 4.4,
+    "yVal": 5,
+    "path": "M22,-283C84,-279,84,-356,18,-350",
+    "text": "Drag to resize",
+    "textOffset": [
+      91,
+      -334
+    ]
+  }
 
 var c = d3.conventions({parentSel: d3.select('#graph'), width: 450})
 
@@ -211,16 +221,16 @@ d3.tsv('lib/data.tsv', function(res){
       .attr({r: 5, stroke: '#000'})
       .call(d3.attachTooltip)
 
-  var legend = c.svg.dataAppend(c.color.domain(), 'g.legend')
-      .translate(function(d, i){ return [0, i*20] })
+  // var legend = c.svg.dataAppend(c.color.domain(), 'g.legend')
+  //     .translate(function(d, i){ return [0, i*20] })
 
-  legend.append('rect')
-      .attr({x: c.width - 18, width: 18, height: 18})
-      .style('fill', c.color)
+  // legend.append('rect')
+  //     .attr({x: c.width - 18, width: 18, height: 18})
+  //     .style('fill', c.color)
 
-  legend.append('text')
-      .attr({x: c.width - 24, y: 9, dy: '.33em', 'text-anchor': 'end'})
-      .text(ƒ())
+  // legend.append('text')
+  //     .attr({x: c.width - 24, y: 9, dy: '.33em', 'text-anchor': 'end'})
+  //     .text(ƒ())
 
 
 
@@ -265,38 +275,37 @@ d3.tsv('lib/data.tsv', function(res){
         .call(d3.attachTooltip)
 
 
-    var swoopySel = r.svg.append('g.annotations')
+    swoopy.draggable(false).annotations(annotations.concat(dragToResize))
+    var swoopySel = r.svg.append('g.annotations').call(swoopy)
 
-    swoopy.draggable(false)
-    swoopySel.call(swoopy)
+    swoopySel.selectAll('path')
+        .attr('marker-end', 'url(#arrow)')
 
-
-    var dragResize = d3.behavior.drag()
-        .on('drag', function() {
-          // Determine resizer position relative to resizable (parent)
-          x = d3.mouse(this.parentNode)[0];
-          
-          // Avoid negative or really small widths
-          x = Math.max(50, x);
-          
-          resizable.style('width', x + 'px');
+    swoopySel.selectAll('text').style('fill', 'black')
 
 
-          r.x.range([0, x])
-          c.x.range([0, x])
+    resizer.call(d3.behavior.drag().on('drag', function(){
+      setWidth(d3.mouse(this.parentNode)[0])
+    }))
 
-          circles.attr('cx', ƒ('sepalWidth', r.x))
+    function setWidth(x){
+      x = Math.max(50, x - r.margin.left - r.margin.right)
+      
+      resizable.style('width', x + 'px');
 
-          swoopySel.selectAll('*').remove()
-          swoopySel.call(swoopy)
+      r.x.range([0, x])
+      // c.x.range([0, x])
 
-          r.selectAll('.axis').remove()
-          r.drawAxis()
-          
+      circles.attr('cx', ƒ('sepalWidth', r.x))
 
-        })
+      swoopySel.selectAll('g').translate(function(d){
+        return [r.x(d.xVal), r.y(d.yVal)]
+      })
 
-    resizer.call(dragResize);
+      r.svg.select('.x.axis').call(r.xAxis)
+    }
+
+    setWidth(500)
 
 
   })()
