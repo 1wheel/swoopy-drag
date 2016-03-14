@@ -28,9 +28,7 @@ and turns them into arrows and labels:
         .y(function(d){ return yScale(d.yVal) })
         .annotations(annotations)
         
-    var swoopySel = svg.append('g')
-        .classed('annotations', true)
-        .call(swoopy)
+    var swoopySel = svg.append('g').call(swoopy)
 
 Just like `d3.svg.line`, `x` and `y` take functions that 
 

@@ -6,6 +6,7 @@ body{
   width: 900px;
   margin: 0px auto;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  /*font-size: 110%;*/
 }
 
 h1{
@@ -80,7 +81,7 @@ p{
   max-width: 600px;
   margin: 0px auto;
   padding-bottom: 30px;
-  font-size: 15px;
+  font-size: 16px;
 }
 
 
@@ -111,20 +112,35 @@ p{
 <h3>Artisanal label placement for d3 graphics. </h3>
 
 <p>
-  <i>"The annotation layer is the most important thing we do"</i> -Amanda Cox
+  <i>“The annotation layer is the most important thing we do”</i> -Amanda Cox
 </p>
 <p>
-  <span class='mono'>swoop-drag</span> helps you hand place annotations on d3 graphics. It takes an array of objects representing annotations and turns them into arrows and labels. Drag the text and control circles below to update the annotations array.
+  <span class='mono'>swoopDrag</span> helps you hand place annotations on d3 graphics. It takes an array of objects representing annotations and turns them into arrows and labels. Drag the text and control circles below to update the annotations array.
 </p>
-
-
-
 
 <div>
   <div id='graph'>
   </div>
   <div id='annotations-update'></div>
 </div>
+
+<p>
+The <span class='mono'>x</span> and <span class='mono'>y</span> functions are called on each annotation to determine its position. The annotations are added to page just like 
+
+<pre>
+var swoopy = d3.swoopyDrag()
+    .x(function(d){ return xScale(d.xVal) })
+    .y(function(d){ return yScale(d.yVal) })
+    .annotations(annotations)
+    
+var swoopySel = svg.append('g').call(swoopy)
+</pre>
+
+<p>
+The shape of each annotation's line is determined by the <span class='mono'>path</span> property (only <a href='https://www.w3.org/TR/SVG/paths.html#PathDataLinetoCommands'>straight lines</a> and <a href='https://www.w3.org/TR/SVG/paths.html#PathDataQuadraticBezierCommands'>béziers</a> are currently supported), the string of text by the <span class='mono'>text</span> property and the position of the text by the <span class='mono'>testOffset</span> property.
+
+</p>
+
 
 <h3>Responsive</h3>
 
@@ -249,12 +265,12 @@ d3.tsv('lib/data.tsv', function(res){
   swoopySel.selectAll('path')
       .attr('marker-end', 'url(#arrow)')
 
-  swoopySel.selectAll('text')
-      .each(function(d){
-        d3.select(this)
-            .text('')
-            .tspans(d.text.split(' '))
-      })
+  // swoopySel.selectAll('text')
+  //     .each(function(d){
+  //       d3.select(this)
+  //           .text('')
+  //           .tspans(d.text.split(' '))
+  //     })
 
   c.svg.append('marker')
       .attr('id', 'arrow')
@@ -300,7 +316,7 @@ d3.tsv('lib/data.tsv', function(res){
     var curX, isGrowing
     function setWidth(x){
       curX = x
-      x = Math.max(50, x - r.margin.left - r.margin.right)
+      x = Math.min(Math.max(50, x - r.margin.left - r.margin.right), 1000)
       r.x.range([0, x])
 
       resizable.style('width', x + 'px');
