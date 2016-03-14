@@ -86,9 +86,10 @@ p{
 
 
 #resizable {
-    position: relative;
-    width: 500px;
-    height: 520px;
+  position: relative;
+  width: 500px;
+  height: 520px;
+  margin-bottom: 40px;
 }
 
 #resizable .resizer {
@@ -127,13 +128,21 @@ p{
 
 <h3>Responsive</h3>
 
-
 <div id="resizable">
   <div class="resizer"></div>
 </div>
 
+<p> Drag to see how annotations adjust to different sizes</p>
 
 
+<h3>Arrowheads</h3>
+
+<p>tktk text and code</p>
+
+
+<h3>Text Wrap</h3>
+
+<p>tktk text and code</p>
 
 <div class='tooltip'></div>
 
@@ -288,25 +297,42 @@ d3.tsv('lib/data.tsv', function(res){
       setWidth(d3.mouse(this.parentNode)[0])
     }))
 
+    var curX, isGrowing
     function setWidth(x){
+      curX = x
       x = Math.max(50, x - r.margin.left - r.margin.right)
-      
-      resizable.style('width', x + 'px');
-
       r.x.range([0, x])
-      // c.x.range([0, x])
 
+      resizable.style('width', x + 'px');
       circles.attr('cx', ƒ('sepalWidth', r.x))
-
       swoopySel.selectAll('g').translate(function(d){
         return [r.x(d.xVal), r.y(d.yVal)]
       })
-
       r.svg.select('.x.axis').call(r.xAxis)
     }
 
     setWidth(500)
 
+    lastScroll = new Date()
+
+    d3.select(window).on('scroll.dragjigger', function(){
+      lastScroll = new Date()
+    })
+
+    d3.timer(function(){
+      if (+lastScroll < +new Date() - 100) return
+
+      var min = 400
+      var max = 800
+      var mid = (min + max)/2
+
+      if (curX < min) isGrowing = true
+      if (curX > max) isGrowing = false
+
+      var step = Math.max(1, Math.abs(600))
+
+      setWidth(curX + (isGrowing ? 1 : -1)*2) 
+    })
 
   })()
 
