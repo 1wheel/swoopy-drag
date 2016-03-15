@@ -6,7 +6,6 @@ body{
   width: 900px;
   margin: 0px auto;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  /*font-size: 110%;*/
 }
 
 h1{
@@ -66,22 +65,35 @@ div.tooltip {
 #annotations-update{
   display: inline-block;
   width: 380px;
-  text-align: top;
   position: relative;
-  top: -50px;
-  background: #eee;
-  padding-left: 10px;
+  top: -25px;
+  left: -120px;
+  /*background: #eee;*/
 }
 
-.mono{
+.mono, m{
   font-family: monospace;
+  display: inline-block;
+  font-size: 16px;
 }
 
 p{
   max-width: 600px;
   margin: 0px auto;
-  padding-bottom: 30px;
   font-size: 16px;
+}
+
+pre{
+  font-size: 14px;
+  margin: 0px;
+  margin-left: 150px;
+  padding-left: 15px;
+  border-left: 2px solid #ccc;
+}
+
+
+p, pre{
+  margin-bottom: 30px;
 }
 
 
@@ -94,15 +106,17 @@ p{
 }
 
 #resizable .resizer {
-    position: absolute;
-    width: 10px;
-    top: 0;
-    bottom: 0;
-    right: -44px;
-    background: #ccc;
-    opacity: .5;
-    cursor: pointer;
+  position: absolute;
+  width: 10px;
+  top: 0;
+  bottom: 0;
+  right: -44px;
+  background: #ccc;
+  opacity: .5;
+  cursor: pointer;
 }
+
+
 
 </style>
 
@@ -118,28 +132,33 @@ p{
   <span class='mono'>swoopDrag</span> helps you hand place annotations on d3 graphics. It takes an array of objects representing annotations and turns them into arrows and labels. Drag the text and control circles below to update the annotations array.
 </p>
 
-<div>
+<div style='padding-top: 20px; padding-bottom: 15px;'>
   <div id='graph'>
   </div>
   <div id='annotations-update'></div>
 </div>
 
 <p>
-The <span class='mono'>x</span> and <span class='mono'>y</span> functions are called on each annotation to determine its position. The annotations are added to page just like 
+The <span class='mono'>x</span> and <span class='mono'>y</span> functions are called on each annotation to determine its position. 
 
 <pre>
 var swoopy = d3.swoopyDrag()
     .x(function(d){ return xScale(d.xVal) })
     .y(function(d){ return yScale(d.yVal) })
     .annotations(annotations)
-    
-var swoopySel = svg.append('g').call(swoopy)
 </pre>
 
 <p>
 The shape of each annotation's line is determined by the <span class='mono'>path</span> property (only <a href='https://www.w3.org/TR/SVG/paths.html#PathDataLinetoCommands'>straight lines</a> and <a href='https://www.w3.org/TR/SVG/paths.html#PathDataQuadraticBezierCommands'>béziers</a> are currently supported), the string of text by the <span class='mono'>text</span> property and the position of the text by the <span class='mono'>testOffset</span> property.
 
 </p>
+
+<p> The annotations are added to page just like <m>d3.svg.axis</m> - appened a new <m>group</m> element and use <m>call</m>:
+</p>
+
+<pre>
+var swoopySel = svg.append('g').call(swoopy)
+</pre>
 
 
 <h3>Responsive</h3>
@@ -278,8 +297,8 @@ d3.tsv('lib/data.tsv', function(res){
       .attr('markerWidth', 20)
       .attr('markerHeight', 20)
       .attr('orient', 'auto')
-    .append('polyline')
-      .attr('points', '-6.75,-6.75 0,0 -6.75,6.75')
+    .append('path')
+      .attr('d', 'M-6.75,-6.75 L 0,0 L -6.75,6.75')
 
 
   !(function(){

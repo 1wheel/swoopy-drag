@@ -61,14 +61,14 @@ Alternatively if there's just one or two problematic annotations that only work 
 
 SVG has native support for [arrowheads](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/marker), but they can be a little fiddly to get working. First, add a `marker` element to the page the describes the shape of the arrow:
 
-    svg.append('marker')
+    c.svg.append('marker')
         .attr('id', 'arrow')
         .attr('viewBox', '-10 -10 20 20')
         .attr('markerWidth', 20)
         .attr('markerHeight', 20)
         .attr('orient', 'auto')
-      .append('polyline')
-        .attr('points', '-6.75,-6.75 0,0 -6.75,6.75')
+      .append('path')
+        .attr('d', 'M-6.75,-6.75 L 0,0 L -6.75,6.75')
 
 Next, select paths in each annotation and set their `marker-end` attribute:
 
