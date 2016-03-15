@@ -172,7 +172,7 @@ var swoopy = d3.swoopyDrag()
 The shape of each annotation's line is determined by the <span class='mono'>path</span> property, the text by the <span class='mono'>text</span> property and the position of the text by the <span class='mono'>testOffset</span> property. Currently only <a href='https://www.w3.org/TR/SVG/paths.html#PathDataLinetoCommands'>straight paths</a> (paths of the form <m>M 0,0 L 10,10</m>) and <a href='https://www.w3.org/TR/SVG/paths.html#PathDataQuadraticBezierCommands'>béziers</a> (paths of the form <m>M 0,0 C 10,10 10,15, 20,15</m>) are supported—see my interactive path string <a href='http://roadtolarissa.com/blog/2015/02/22/svg-path-strings/'>tutorial</a> for more.
 </p>
 
-<p> The annotations are added to page just like <m>d3.svg.axis</m> - appened a new <m>group</m> element and use <m>call</m>:
+<p> The annotations are added to the page just like <m>d3.svg.axis</m> - append a new <m>group</m> element and use <m>call</m>:
 </p>
 
 <pre>
@@ -188,7 +188,7 @@ var swoopySel = svg.append('g').call(swoopy)
   <div class="resizer"></div>
 </div>
 
-<p> Since each annotation's position is determined primary by scales, lines and labels will still point to the correct position when the chart size changes. As the chart shrinks though, the annotations might overlap or cover up data points. To show fewer or differently positioned labels on mobile, you could create multiple annotation arrays for different screen sizes: 
+<p> Since each annotation's position is determined primarily by scales, lines and labels will still point to the correct position when the chart size changes. As the chart shrinks though, the annotations might overlap or cover up data points. To show fewer or differently positioned labels on mobile, you could create multiple annotation arrays for different screen sizes: 
 </p>
 
 <pre>
@@ -403,7 +403,7 @@ d3.tsv('lib/data.tsv', function(res){
         .call(d3.attachTooltip)
 
 
-    swoopy.draggable(true).annotations(annotations.concat(dragToResize))
+    swoopy.draggable(false).annotations(annotations.concat(dragToResize))
     var swoopySel = r.svg.append('g.annotations').call(swoopy)
 
     swoopySel.selectAll('path')
