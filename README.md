@@ -77,12 +77,12 @@ Next, select paths in each annotation and set their `marker-end` attribute:
 
 ### Text wrap
 
-Multiline text can be added with d3-jetpack. Select all of the `text` elements, clear the existing text, then use `d3.wordwrap` and `tspans` from d3-jetpack add wrapped text:
+Multiline text can be added with d3-jetpack. Select all of the `text` elements, clear the existing text, then use `d3.wordwrap` and `tspans` to wrap the text:
 
     swoopySel.selectAll('text')
         .each(function(d){
           d3.select(this)
-              .text('')                        //remove initial
+              .text('')                        //clear text
               .tspans(d3.wordwrap(d.text, 20)) //20 char wrap
         })  
 

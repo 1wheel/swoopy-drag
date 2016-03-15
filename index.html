@@ -6,6 +6,7 @@ body{
   width: 900px;
   margin: 0px auto;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: #F5F5F5;
 }
 
 h1{
@@ -73,14 +74,21 @@ div.tooltip {
 
 .mono, m{
   font-family: monospace;
-  display: inline-block;
-  font-size: 16px;
+  display: inline;
+  font-size: 14px;
+
+  background: #ddd;
+  padding: .05em;
+  padding-left: .2em;
+  padding-right: .2em;
+  border-radius: 6px;
 }
 
 p{
   max-width: 600px;
   margin: 0px auto;
   font-size: 16px;
+  line-height: 1.4em;
 }
 
 pre{
@@ -116,6 +124,9 @@ p, pre{
   cursor: pointer;
 }
 
+a{
+  color: black;
+}
 
 
 </style>
@@ -129,7 +140,7 @@ p, pre{
   <i>“The annotation layer is the most important thing we do”</i> -Amanda Cox
 </p>
 <p>
-  <span class='mono'>swoopDrag</span> helps you hand place annotations on d3 graphics. It takes an array of objects representing annotations and turns them into arrows and labels. Drag the text and control circles below to update the annotations array.
+  <span class='mono'>swoopyDrag</span> helps you hand place annotations on d3 graphics. It takes an array of objects representing annotations and turns them into arrows and labels. Drag the text and control circles below to update the annotations array.
 </p>
 
 <div style='padding-top: 20px; padding-bottom: 15px;'>
@@ -139,17 +150,18 @@ p, pre{
 </div>
 
 <p>
-The <span class='mono'>x</span> and <span class='mono'>y</span> functions are called on each annotation to determine its position. 
+The <span class='mono'>x</span> and <span class='mono'>y</span> functions are called on each annotation to determine its position. The array of annoations are passed in through <m>annotations</m>. Setting <m>draggable</m> to <m>true</m> adds control points to the path strings and enables label dragging - turn on while developing and off when you're ready to publish.
 
 <pre>
 var swoopy = d3.swoopyDrag()
     .x(function(d){ return xScale(d.xVal) })
     .y(function(d){ return yScale(d.yVal) })
+    .draggable(true)
     .annotations(annotations)
 </pre>
 
 <p>
-The shape of each annotation's line is determined by the <span class='mono'>path</span> property (only <a href='https://www.w3.org/TR/SVG/paths.html#PathDataLinetoCommands'>straight lines</a> and <a href='https://www.w3.org/TR/SVG/paths.html#PathDataQuadraticBezierCommands'>béziers</a> are currently supported), the string of text by the <span class='mono'>text</span> property and the position of the text by the <span class='mono'>testOffset</span> property.
+The shape of each annotation's line is determined by the <span class='mono'>path</span> property (only <a href='http://roadtolarissa.com/blog/2015/02/22/svg-path-strings/'>straight lines</a> and <a href='https://www.w3.org/TR/SVG/paths.html#PathDataQuadraticBezierCommands'>béziers</a> are currently supported), the string of text by the <span class='mono'>text</span> property and the position of the text by the <span class='mono'>testOffset</span> property.
 
 </p>
 
@@ -160,6 +172,8 @@ The shape of each annotation's line is determined by the <span class='mono'>path
 var swoopySel = svg.append('g').call(swoopy)
 </pre>
 
+<p>After posititioning the labels, open the <a href='https://developer.chrome.com/devtools/docs/console'>dev tools</a>, run <m>copy(annotations)</m> in the console and paste over the old <m>annotations</m> array in your text editor.
+
 
 <h3>Responsive</h3>
 
@@ -167,17 +181,62 @@ var swoopySel = svg.append('g').call(swoopy)
   <div class="resizer"></div>
 </div>
 
-<p> Drag to see how annotations adjust to different sizes</p>
+<p> Since each annotation's position is determined primary by scales, lines and labels will still point to the correct position when the chart size changes. As the chart shrinks though, the annotations might overlap or cover up data points. To show fewer or differently positioned notes on mobile, you could create multiple annotation arrays for different screen sizes: 
+</p>
 
+<pre>
+d3.swoopyDrag()
+  .annotations(innerWidth < 800 ? mobileAnnotations : desktopAnnotations)
+</pre>
+
+<p>
+  Alternatively if there's just one or two problematic annotations that only work above or below some sizes, you could add <m>maxWidth</m> and <m>minWidth</m> properties to the overlapping annotations and filter: 
+</p>
+
+<pre>
+d3.swoopyDrag()
+  .annotations(annotations.filter(function(d){
+    return (typeof(d.minWidth) == 'undefined' || innerWidth > d.minWidth)
+        && (typeof(d.maxWidth) == 'undefined' || innerWidth < d.maxWidth)
+    }))
+</pre>
 
 <h3>Arrowheads</h3>
 
-<p>tktk text and code</p>
+<p>SVG has native support for <a href='https://developer.mozilla.org/en-US/docs/Web/SVG/Element/marker'>arrowheads</a>, but they can be a little fiddly to get working. First, add a <m>marker</m> element to the page the describes the shape of the arrow:
+</p>
+
+<pre>
+svg.append('marker')
+    .attr('id', 'arrow')
+    .attr('viewBox', '-10 -10 20 20')
+    .attr('markerWidth', 20)
+    .attr('markerHeight', 20)
+    .attr('orient', 'auto')
+  .append('path')
+    .attr('d', 'M-6.75,-6.75 L 0,0 L -6.75,6.75')
+</pre>
+
+<p>Next, select paths in each annotation and set their <m>marker-end</m> attribute:
+
+<pre>
+swoopySel.selectAll('path').attr('marker-end', 'url(#arrow)')
+</pre>
 
 
 <h3>Text Wrap</h3>
 
-<p>tktk text and code</p>
+<p>Multiline text can be added with <a href='https://github.com/gka/d3-jetpack'>d3-jetpack</a>. Select all of the <m>text</m> elements, clear the existing text, then use <m>d3.wordwrap</m> and <m>tspans</m> to wrap the text:
+</p>
+
+<pre>
+swoopySel.selectAll('text')
+    .each(function(d){
+      d3.select(this)
+          .text('')                        //clear existing text
+          .tspans(d3.wordwrap(d.text, 20)) //wrap after 20 char
+    })  
+</pre>
 
 <div class='tooltip'></div>
 
@@ -355,7 +414,7 @@ d3.tsv('lib/data.tsv', function(res){
     })
 
     d3.timer(function(){
-      if (+lastScroll < +new Date() - 100) return
+      if (+lastScroll < +new Date() - 300) return
 
       var min = 400
       var max = 800
@@ -366,7 +425,7 @@ d3.tsv('lib/data.tsv', function(res){
 
       var step = Math.max(1, Math.abs(600))
 
-      setWidth(curX + (isGrowing ? 1 : -1)*2) 
+      setWidth(curX + (isGrowing ? 1 : -1)*5) 
     })
 
   })()
