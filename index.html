@@ -17,6 +17,10 @@ h1, h3{
   text-align: center;
 }
 
+h3{
+  margin-bottom: 20px;
+}
+
 svg{
   overflow: visible;
 }
@@ -52,6 +56,7 @@ div.tooltip {
   background: rgba(255, 255, 255, .90);
   border: 1px solid lightgray;
   pointer-events: none;
+  z-index: 100;
 }
 .tooltip-hidden{
   opacity: 0;
@@ -62,6 +67,8 @@ div.tooltip {
 #graph{
   display: inline-block;
   width: 500px;
+  position: relative;
+  z-index: 2;
 }
 #annotations-update{
   display: inline-block;
@@ -177,7 +184,7 @@ var swoopySel = svg.append('g').call(swoopy)
 
 <h3>Responsive</h3>
 
-<div id="resizable">
+<div id="resizable" style='padding-top: 20px; padding-bottom: 15px;'>
   <div class="resizer"></div>
 </div>
 
@@ -238,6 +245,37 @@ swoopySel.selectAll('text')
     })  
 </pre>
 
+<p>
+Since the annotations are made up of selectable <m>path</m> and <m>group</m> elements, they can be styled differently. 
+
+
+<h3>Examples</h3>
+<p style='line-height: 2.8em;'>
+<a href='http://roadtolarissa.com/nba-minutes/'>Minute by Minute Point Differentials</a>
+<br>
+<a href='http://roadtolarissa.com/nba-win-loss/'>NBA Win/Loss Records</a>
+</p>
+
+
+
+
+<h3>Other Tools</h3>
+<p style='line-height: 2.8em;'>
+  <a href='https://github.com/bizweekgraphics/swoopyarrows'>swoopyarrows</a> creates fancier swoops, including circular and loopy arcs.
+  <br>
+  <a href='http://twitter.github.io/labella.js/'>labella.js</a> uses a force directed layout to position timeline labels with no overlap.
+  <br>
+  <a href='http://nytimes.github.io/svg-crowbar/'>svg-crowbar</a> lets you export a <m>svg</m> file and add annotations manually.
+  <br>
+  <a href='http://ai2html.org/'>ai2html</a> illustrator script that creates responsive <m>html</m>. 
+  <br>
+</P>
+
+<h3>Contribute</h3>
+<p style='text-align: center; margin-bottom: 80px;'> 
+<a href='http://github.com/1wheel/swoopy-drag'>github.com/1wheel/swoopy-drag</a>
+</p>
+
 <div class='tooltip'></div>
 
 
@@ -257,30 +295,30 @@ var annotations = [
     "xVal": 4.4,
     "yVal": 5.7,
     "path": "M-49,-61L-6,-8",
-    "text": "Blue Flower",
+    "text": "Setosa",
     "textOffset": [
-      -85,
-      -77
+      -83,
+      -65
     ]
   },
   {
     "xVal": 3.8,
     "yVal": 7.7,
-    "path": "M-103,-50C-116,-12,-46,25,-8,-16",
-    "text": "Green Flower",
+    "path": "M-100,-47C-116,-12,-46,25,-8,-16",
+    "text": "Vigrinica",
     "textOffset": [
-      -100,
-      -57
+      -98,
+      -49
     ]
   },
   {
-    "xVal": 2,
+    "xVal": 2.3,
     "yVal": 5,
-    "path": "M56,96C-29,93,86,43,11,4",
-    "text": "Orange Flower",
+    "path": "M-5,86C-64,71,-56,25,-11,6",
+    "text": "Versicolor",
     "textOffset": [
-      66,
-      95
+      -2,
+      92
     ]
   }
 ]
@@ -414,7 +452,7 @@ d3.tsv('lib/data.tsv', function(res){
     })
 
     d3.timer(function(){
-      if (+lastScroll < +new Date() - 300) return
+      if (+lastScroll < +new Date() - 600) return
 
       var min = 400
       var max = 800

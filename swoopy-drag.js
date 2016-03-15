@@ -43,9 +43,10 @@ d3.swoopyDrag = function(){
 
 
   var rv = function(sel){
-    annotationSel = sel.selectAll('g')
-      .data(annotations).enter().append('g')
-        .call(translate, function(d){ return [x(d), y(d)] })
+    annotationSel = sel.selectAll('g').data(annotations)
+    annotationSel.exit().remove()
+    annotationSel.enter().append('g')
+    annotationSel.call(translate, function(d){ return [x(d), y(d)] })
     
     var textSel = annotationSel.append('text')
         .call(translate, ƒ('textOffset'))
@@ -78,7 +79,6 @@ d3.swoopyDrag = function(){
       }
 
       points.push({pos: d.path.slice(i, j).split(','), type: type})
-      console.log(points)
       return points
     }).enter().append('circle')
         .attr({r: 8, fill: 'rgba(0,0,0,0)', stroke: '#333', 'stroke-dasharray': '2 2'})
@@ -112,11 +112,13 @@ d3.swoopyDrag = function(){
 
   return d3.rebind(rv, dispatch, 'on')
 
-
+  //no jetpack dependency 
   function translate(sel, pos){
     sel.attr('transform', function(d){
       var posStr = typeof(pos) == 'function' ? pos(d) : pos
       return 'translate(' + posStr + ')' 
     }) 
   }
+
+  function ƒ(str){ return function(d){ return d[str] } } 
 }
