@@ -27,7 +27,7 @@ svg{
 
 text {
   font-size: 12px;
-  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+  text-shadow: 0 1px 0 #F5F5F5, 1px 0 0 #F5F5F5, 0 -1px 0 #F5F5F5, -1px 0 0 #F5F5F5;
 }
 
 .axis line, .axis path {
@@ -74,7 +74,7 @@ div.tooltip {
 #annotations-update{
   display: block;
   float: right;
-  width: 380px;
+  width: 500px;
   position: relative;
   top: -25px;
   left: -120px;
@@ -114,7 +114,12 @@ p, pre{
   margin-bottom: 30px;
 }
 
-
+#graphcontainer {
+  padding-top: 20px; 
+  padding-bottom: 15px; 
+  overflow: auto; 
+  width: 1000px;
+}
 
 #resizable {
   position: relative;
@@ -144,26 +149,26 @@ a{
 <body>
 
 <h1><a href='https://github.com/1wheel/swoopy-drag'>swoopyDrag.js</a></h1>
-<h3>Artisanal label placement for d3 graphics. </h3>
+<h3 style='margin-bottom: 50px;'>Artisanal label placement for d3 graphics</h3>
 
 <p>
-  <i>“The annotation layer is the most important thing we do”</i> -Amanda Cox
+  <i>“The annotation layer is the most important thing we do”</i> —Amanda Cox
 </p>
 <p>
-  <span class='mono'>swoopyDrag</span> helps you hand place annotations on d3 graphics. It takes an array of objects representing annotations and turns them into arrows and labels. Drag the text and control circles below to update the annotations array.
+  <span class='mono'>swoopyDrag</span> helps you hand place annotations on d3 graphics. It takes an array of objects representing annotations and turns them into lines and labels. Drag the text and control circles below to update the annotations array:
 </p>
 <p>
   New! Click and drag from any point to create a new annotation with <a href="#bootstrap">bootstrap</a>.
 </p>
 
-<div style='padding-top: 20px; padding-bottom: 15px;'>
+<div id='graphcontainer'>
   <div id='graph'>
   </div>
   <div id='annotations-update'></div>
 </div>
 
 <p>
-The <span class='mono'>x</span> and <span class='mono'>y</span> functions are called on each annotation to determine its position. The array of annoations are passed in through <m>annotations</m>. Setting <m>draggable</m> to <m>true</m> adds control points to the path strings and enables label dragging - turn on while developing and off when you're ready to publish.
+The <span class='mono'>x</span> and <span class='mono'>y</span> functions are called on each annotation to determine its position. Setting <m>draggable</m> to <m>true</m> adds control points to the path strings and enables label dragging - turn on while developing and off when you're ready to publish.
 
 <pre>
 var swoopy = d3.swoopyDrag()
@@ -174,11 +179,11 @@ var swoopy = d3.swoopyDrag()
 </pre>
 
 <p>
-The shape of each annotation's line is determined by the <span class='mono'>path</span> property (only <a href='http://roadtolarissa.com/blog/2015/02/22/svg-path-strings/'>straight lines</a> and <a href='https://www.w3.org/TR/SVG/paths.html#PathDataQuadraticBezierCommands'>béziers</a> are currently supported), the string of text by the <span class='mono'>text</span> property and the position of the text by the <span class='mono'>testOffset</span> property.
 
+The shape of each annotation's line is determined by the <span class='mono'>path</span> property, the text by the <span class='mono'>text</span> property and the position of the text by the <span class='mono'>testOffset</span> property. Currently only <a href='https://www.w3.org/TR/SVG/paths.html#PathDataLinetoCommands'>straight paths</a> (paths of the form <m>M 0,0 L 10,10</m>) and <a href='https://www.w3.org/TR/SVG/paths.html#PathDataQuadraticBezierCommands'>béziers</a> (paths of the form <m>M 0,0 C 10,10 10,15, 20,15</m>) are supported—see my interactive path string <a href='http://roadtolarissa.com/blog/2015/02/22/svg-path-strings/'>tutorial</a> for more.
 </p>
 
-<p> The annotations are added to page just like <m>d3.svg.axis</m> - appened a new <m>group</m> element and use <m>call</m>:
+<p> The annotations are added to the page just like <m>d3.svg.axis</m> - append a new <m>group</m> element and use <m>call</m>:
 </p>
 
 <pre>
@@ -194,7 +199,7 @@ var swoopySel = svg.append('g').call(swoopy)
   <div class="resizer"></div>
 </div>
 
-<p> Since each annotation's position is determined primary by scales, lines and labels will still point to the correct position when the chart size changes. As the chart shrinks though, the annotations might overlap or cover up data points. To show fewer or differently positioned notes on mobile, you could create multiple annotation arrays for different screen sizes: 
+<p> Since each annotation's position is determined primarily by scales, lines and labels will still point to the correct position when the chart size changes. As the chart shrinks though, the annotations might overlap or cover up data points. To show fewer or differently positioned labels on mobile, you could create multiple annotation arrays for different screen sizes: 
 </p>
 
 <pre>
@@ -329,8 +334,8 @@ var annotations = [
   {
     "xVal": 3.8,
     "yVal": 7.7,
-    "path": "M-100,-47C-116,-12,-39,12,-8,-16",
-    "text": "Vigrinica",
+    "path": "M-100,-47C-116,-12,-46,25,-8,-16",
+    "text": "Virginica",
     "textOffset": [
       -98,
       -49
@@ -339,7 +344,7 @@ var annotations = [
   {
     "xVal": 2.3,
     "yVal": 5,
-    "path": "M-5,86C-64,71,-56,25,-11,6",
+    "path": "M-5,86C-47,82,-55,18,-9,4",
     "text": "Versicolor",
     "textOffset": [
       -2,
@@ -395,19 +400,6 @@ d3.tsv('lib/data.tsv', function(res){
       .attr('fill', ƒ('species', c.color))
       .attr({r: 5, stroke: '#000'})
    //   .call(d3.attachTooltip)
-
-  // var legend = c.svg.dataAppend(c.color.domain(), 'g.legend')
-  //     .translate(function(d, i){ return [0, i*20] })
-
-  // legend.append('rect')
-  //     .attr({x: c.width - 18, width: 18, height: 18})
-  //     .style('fill', c.color)
-
-  // legend.append('text')
-  //     .attr({x: c.width - 24, y: 9, dy: '.33em', 'text-anchor': 'end'})
-  //     .text(ƒ())
-
-
 
   var swoopySel = c.svg.append('g.annotations')
       .call(swoopy)
@@ -494,7 +486,7 @@ d3.tsv('lib/data.tsv', function(res){
     })
 
     d3.timer(function(){
-      if (+lastScroll < +new Date() - 600) return
+      if (lastScroll < new Date() - 600) return
 
       var min = 400
       var max = 800
@@ -504,6 +496,16 @@ d3.tsv('lib/data.tsv', function(res){
       if (curX > max) isGrowing = false
 
       var step = Math.max(1, Math.abs(600))
+
+      setWidth(curX + (isGrowing ? 1 : -1)*5) 
+    })
+
+  })()
+
+})
+
+
+</script>ep = Math.max(1, Math.abs(600))
 
       setWidth(curX + (isGrowing ? 1 : -1)*5) 
     })
