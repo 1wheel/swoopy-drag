@@ -65,17 +65,20 @@ div.tooltip {
 
 
 #graph{
-  display: inline-block;
+  display: block;
+  float: left;
   width: 500px;
-  position: relative;
   z-index: 2;
+  top: 0;
 }
 #annotations-update{
-  display: inline-block;
+  display: block;
+  float: right;
   width: 380px;
   position: relative;
   top: -25px;
   left: -120px;
+  z-index: -1;
   /*background: #eee;*/
 }
 
@@ -148,6 +151,9 @@ a{
 </p>
 <p>
   <span class='mono'>swoopyDrag</span> helps you hand place annotations on d3 graphics. It takes an array of objects representing annotations and turns them into arrows and labels. Drag the text and control circles below to update the annotations array.
+</p>
+<p>
+  New! Click and drag from any point to create a new annotation with <a href="#bootstrap">bootstrap</a>.
 </p>
 
 <div style='padding-top: 20px; padding-bottom: 15px;'>
@@ -249,6 +255,25 @@ swoopySel.selectAll('text')
 Since the annotations are made up of selectable <m>path</m> and <m>group</m> elements, they can be styled differently. 
 
 
+
+<h3 id="bootstrap">Bootstrap your annotations</h3>
+
+<p>Bootstrap lets you add annotations by clicking and dragging.</p>
+
+<pre>
+var swoopyBootstrap = swoopy.bootstrap()
+  .sel(swoopySel)                        // your d3 selection for swoopy annotations
+  .labelAccessor(ƒ('species'))           // this function sets label text
+  .scale({x: yourXScale, y: yourYScale}) // your x and y scales
+
+d3.selectAll('rect')
+  .data(yourData).enter()
+  ...
+  .call(swoopyBootstrap)
+</pre>
+
+
+
 <h3>Examples</h3>
 <p style='line-height: 2.8em;'>
 <a href='http://roadtolarissa.com/nba-minutes/'>Minute by Minute Point Differentials</a>
@@ -304,7 +329,7 @@ var annotations = [
   {
     "xVal": 3.8,
     "yVal": 7.7,
-    "path": "M-100,-47C-116,-12,-46,25,-8,-16",
+    "path": "M-100,-47C-116,-12,-39,12,-8,-16",
     "text": "Vigrinica",
     "textOffset": [
       -98,
@@ -345,6 +370,15 @@ var swoopy = d3.swoopyDrag()
       annotationText.text('var annotations = ' + JSON.stringify(annotations, null, 2))
     })
 
+var swoopy2 = d3.swoopyDrag()
+    .draggable(true)
+    .x(ƒ('xVal', c.x))
+    .y(ƒ('yVal', c.y))
+    .annotations(annotations)
+    .on('drag', function(){
+      annotationText.text('var annotations = ' + JSON.stringify(annotations, null, 2))
+    })
+
 var annotationText = d3.select('#annotations-update').append('pre')
 
 
@@ -355,12 +389,12 @@ d3.tsv('lib/data.tsv', function(res){
   c.y.domain(d3.extent(data, ƒ('sepalLength'))).nice()
   c.drawAxis()
 
-  c.svg.dataAppend(data, 'circle')
+  var circs = c.svg.dataAppend(data, 'circle')
       .attr('cx', ƒ('sepalWidth', c.x))
       .attr('cy', ƒ('sepalLength', c.y))
       .attr('fill', ƒ('species', c.color))
       .attr({r: 5, stroke: '#000'})
-      .call(d3.attachTooltip)
+   //   .call(d3.attachTooltip)
 
   // var legend = c.svg.dataAppend(c.color.domain(), 'g.legend')
   //     .translate(function(d, i){ return [0, i*20] })
@@ -378,6 +412,12 @@ d3.tsv('lib/data.tsv', function(res){
   var swoopySel = c.svg.append('g.annotations')
       .call(swoopy)
 
+  var bootstrap = swoopy.bootstrap()
+      .sel(swoopySel)
+      .labelAccessor(ƒ('species'))
+      .scale({x: c.x, y: c.y})
+
+  circs.call(bootstrap)
   swoopySel.selectAll('path')
       .attr('marker-end', 'url(#arrow)')
 
@@ -408,6 +448,12 @@ d3.tsv('lib/data.tsv', function(res){
     r.y.domain(d3.extent(data, ƒ('sepalLength'))).nice()
     r.drawAxis()
 
+    
+
+    swoopy2.draggable(false).annotations(annotations.concat(dragToResize))
+    var swoopySel = r.svg.append('g.annotations').call(swoopy2)
+
+    
     var circles = r.svg.dataAppend(data, 'circle')
         .attr('cx', ƒ('sepalWidth', r.x))
         .attr('cy', ƒ('sepalLength', r.y))
@@ -416,14 +462,10 @@ d3.tsv('lib/data.tsv', function(res){
         .call(d3.attachTooltip)
 
 
-    swoopy.draggable(false).annotations(annotations.concat(dragToResize))
-    var swoopySel = r.svg.append('g.annotations').call(swoopy)
-
     swoopySel.selectAll('path')
         .attr('marker-end', 'url(#arrow)')
 
     swoopySel.selectAll('text').style('fill', 'black')
-
 
     resizer.call(d3.behavior.drag().on('drag', function(){
       setWidth(d3.mouse(this.parentNode)[0])

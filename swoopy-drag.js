@@ -48,12 +48,17 @@ d3.swoopyDrag = function(){
     annotationSel.enter().append('g')
     annotationSel.call(translate, function(d){ return [x(d), y(d)] })
     
-    var textSel = annotationSel.append('text')
-        .call(translate, ƒ('textOffset'))
-        .text(ƒ('text'))
+    var textSel = annotationSel.selectAll('text')
+      .data(function(d) { return [d]; })
+      .enter().append('text')
+      .call(translate, ƒ('textOffset'))
+      .attr('text-anchor', ƒ('textAnchor'))
+      .text(ƒ('text'))
 
-    annotationSel.append('path')
-        .attr('d', ƒ('path'))
+    annotationSel.selectAll('path')
+      .data(function(d) { return [d]; })
+      .enter().append('path')
+      .attr('d', ƒ('path'))
 
     if (!draggable) return
 
@@ -108,6 +113,57 @@ d3.swoopyDrag = function(){
     if (typeof(_x) == 'undefined') return draggable
     draggable = _x
     return rv
+  }
+  rv.bootstrap = function() {
+    var self = this
+    var bootstrapOriginCoords
+    var sel
+    var labelAccessor = ƒ('key')
+    var scale = {
+      x: null,
+      y: null
+    }
+    var drag = d3.behavior.drag()
+      .on('dragstart', function(d) {
+        bootstrapOriginCoords = d3.mouse(this);
+        d3.event.sourceEvent.stopPropagation();
+      })
+      .on('dragend', function(d) {
+        d3.event.sourceEvent.stopPropagation();
+        var coords = d3.mouse(this);
+        var xDiff = coords[0] - bootstrapOriginCoords[0];
+        var yDiff = coords[1] - bootstrapOriginCoords[1];
+        console.log(annotations)
+        annotations.push({
+          'xVal': scale.x.invert(bootstrapOriginCoords[0]),
+          'yVal': scale.y.invert(bootstrapOriginCoords[1]),
+          'path': 'M0,0C' + (xDiff*0.2) + ',' + (yDiff*0.2) + ',' + (xDiff*0.8) + ',' + (yDiff*0.8) + ',' + xDiff + ',' + yDiff,
+          'text': labelAccessor(d),
+          'textAnchor': xDiff > 0 ? 'start' : 'end',
+          'textOffset': xDiff > 0 ? [xDiff + 5, yDiff + 5] : [xDiff - 5, yDiff + 5]
+        })
+        self(sel);
+      });
+
+      drag.scale = function(_x) {
+        if (typeof(_x) == 'undefined') return scale
+        scale = _x
+        return drag
+      }
+
+      drag.sel = function(_x) {
+        if (typeof(_x) == 'undefined') return sel
+        sel = _x
+        return drag
+      }
+
+      drag.labelAccessor = function(_x) {
+        if (typeof(_x) == 'undefined') return labelAccessor
+        labelAccessor = _x
+        return drag
+      }
+
+    return drag;
   }
 
   return d3.rebind(rv, dispatch, 'on')
