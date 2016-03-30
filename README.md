@@ -61,3 +61,9 @@ Usage: `swoopyBootstrap.sel(swoopySel)`
 Pass in a function to set the label text.
 
 Usage: `swoopyBootstrap.labelAccessor(function(d, i) { return "Hello, world!" })`
+
+#### swoopyBootstrap.container([DOM Node])
+
+Explicitly set the DOM node which will be used to determine the offset for mouse events. If you are setting transforms on the elements you want to annotate, you will likely need to use this or your annotations may show up in a place other than where you intended. 
+
+Usage: `swoopyBootstrap.container(swoopySel.node())`

@@ -119,21 +119,24 @@ d3.swoopyDrag = function(){
     var bootstrapOriginCoords
     var sel
     var labelAccessor = ƒ('key')
+    var container
     var scale = {
       x: null,
       y: null
     }
     var drag = d3.behavior.drag()
       .on('dragstart', function(d) {
-        bootstrapOriginCoords = d3.mouse(this);
+
+        bootstrapOriginCoords = d3.mouse(container ? container : this);
         d3.event.sourceEvent.stopPropagation();
       })
       .on('dragend', function(d) {
         d3.event.sourceEvent.stopPropagation();
-        var coords = d3.mouse(this);
+        console.log(d3.event);
+        var coords = d3.mouse(container ? container : this);
         var xDiff = coords[0] - bootstrapOriginCoords[0];
         var yDiff = coords[1] - bootstrapOriginCoords[1];
-        console.log(annotations)
+        console.log(scale.x.domain(), scale.x.range(), bootstrapOriginCoords[0], scale.x.invert(bootstrapOriginCoords[0]))
         annotations.push({
           'xVal': scale.x.invert(bootstrapOriginCoords[0]),
           'yVal': scale.y.invert(bootstrapOriginCoords[1]),
@@ -144,6 +147,12 @@ d3.swoopyDrag = function(){
         })
         self(sel);
       });
+
+      drag.container = function(_x) {
+        if (typeof(_x) == 'undefined') return container
+        container = _x
+        return drag
+      }
 
       drag.scale = function(_x) {
         if (typeof(_x) == 'undefined') return scale
