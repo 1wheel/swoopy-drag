@@ -30,9 +30,12 @@ d3.swoopyDrag = function(){
         var parentSel = d3.select(this.parentNode)
 
         var path = ''
-        parentSel.selectAll('circle').each(function(d){
-          path = path + '' + d.type  + d.pos 
-        })
+        var points = parentSel.selectAll('circle').data()
+        if (points[0].type == 'A'){
+          path = calcCirclePath(points)
+        } else{
+          points.forEach(function(d){ path = path + d.type  + d.pos })
+        }
 
         parentSel.select('path').attr('d', path).datum().path = path
         d3.select(this).call(translate, d.pos)
@@ -63,22 +66,34 @@ d3.swoopyDrag = function(){
     annotationSel.selectAll('circle').data(function(d){
       var points = []
 
-      var i = 1
-      var type = 'M'
-      var commas = 0
+      if (~d.path.indexOf('A')){
+        //handle Arc paths seperatly -- only one circle supported
+        var pathNode = d3.select(this.parentNode).select('path').node()
+        var l = pathNode.getTotalLength()
 
-      for (var j = 1; j < d.path.length; j++){
-        var curChar = d.path[j]
-        if (curChar == ',') commas++
-        if (curChar == 'L' || curChar == 'C' || commas == 2){
-          points.push({pos: d.path.slice(i, j).split(','), type: type})
-          type = curChar
-          i = j + 1
-          commas = 0
+        points = [0, .5, 1].map(function(d){
+          var p = pathNode.getPointAtLength(d*l)
+          return {pos: [p.x, p.y], type: 'A'}
+        })
+      } else{
+        var i = 1
+        var type = 'M'
+        var commas = 0
+
+        for (var j = 1; j < d.path.length; j++){
+          var curChar = d.path[j]
+          if (curChar == ',') commas++
+          if (curChar == 'L' || curChar == 'C' || commas == 2){
+            points.push({pos: d.path.slice(i, j).split(','), type: type})
+            type = curChar
+            i = j + 1
+            commas = 0
+          }
         }
+
+        points.push({pos: d.path.slice(i, j).split(','), type: type})
       }
 
-      points.push({pos: d.path.slice(i, j).split(','), type: type})
       return points
     }).enter().append('circle')
         .attr({r: 8, fill: 'rgba(0,0,0,0)', stroke: '#333', 'stroke-dasharray': '2 2'})
@@ -111,6 +126,39 @@ d3.swoopyDrag = function(){
   }
 
   return d3.rebind(rv, dispatch, 'on')
+
+  //convert 3 points to an Arc Path 
+  function calcCirclePath(points){
+    var a = points[0].pos
+    var b = points[2].pos
+    var c = points[1].pos
+
+    var A = dist(b, c)
+    var B = dist(c, a)
+    var C = dist(a, b)
+
+    var angle = Math.acos((A*A + B*B - C*C)/(2*A*B))
+    
+    //calc radius of circle
+    var K = .5*A*B*Math.sin(angle)
+    var r = A*B*C/4/K
+    r = Math.round(r*1000)/1000
+
+    //large arc flag
+    var laf = +(Math.PI/2 > angle)
+
+    //sweep flag
+    var saf = +((b[0] - a[0])*(c[1] - a[1]) - (b[1] - a[1])*(c[0] - a[0]) < 0) 
+
+    return ['M', a, 'A', r, r, 0, laf, saf, b].join(' ')
+  }
+
+  function dist(a, b){
+    return Math.sqrt(
+      Math.pow(a[0] - b[0], 2) +
+      Math.pow(a[1] - b[1], 2))
+  }
+
 
   //no jetpack dependency 
   function translate(sel, pos){
