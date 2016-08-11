@@ -281,14 +281,13 @@ Since the annotations are made up of selectable <m>path</m> and <m>group</m> ele
 
 </body>
 
-<script src="lib/d3.v3.min.js"></script>
-<script src='lib/d3-jetpack.js'></script>
-<script src='lib/d3-starterkit.js'></script>
+<script src="lib/d3v4+jetpack.js"></script>
 
 <script src='swoopy-drag.js'></script>
 
 
 <script>
+var ƒ = d3.f
 
 var annotations = [
   {
@@ -355,11 +354,12 @@ d3.tsv('lib/data.tsv', function(res){
   c.y.domain(d3.extent(data, ƒ('sepalLength'))).nice()
   c.drawAxis()
 
-  c.svg.dataAppend(data, 'circle')
+  c.svg.appendMany(data, 'circle')
       .attr('cx', ƒ('sepalWidth', c.x))
       .attr('cy', ƒ('sepalLength', c.y))
       .attr('fill', ƒ('species', c.color))
-      .attr({r: 5, stroke: '#000'})
+      .attr('r', 5)
+      .attr('stroke', '#000')
       .call(d3.attachTooltip)
 
   var swoopySel = c.svg.append('g.annotations')
@@ -395,11 +395,12 @@ d3.tsv('lib/data.tsv', function(res){
     r.y.domain(d3.extent(data, ƒ('sepalLength'))).nice()
     r.drawAxis()
 
-    var circles = r.svg.dataAppend(data, 'circle')
+    var circles = r.svg.appendMany(data, 'circle')
         .attr('cx', ƒ('sepalWidth', r.x))
         .attr('cy', ƒ('sepalLength', r.y))
         .attr('fill', ƒ('species', r.color))
-        .attr({r: 5, stroke: '#000'})
+        .attr('r', 5)
+        .attr('stroke', '#000')
         .call(d3.attachTooltip)
 
 
