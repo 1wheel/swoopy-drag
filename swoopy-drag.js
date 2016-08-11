@@ -1,6 +1,6 @@
 d3.swoopyDrag = function(){
-  var x = d3.scale.linear()
-  var y = d3.scale.linear()
+  var x = d3.scaleLinear()
+  var y = d3.scaleLinear()
 
   var annotations = []
   var annotationSel
@@ -9,7 +9,7 @@ d3.swoopyDrag = function(){
 
   var dispatch = d3.dispatch('drag')
 
-  var textDrag = d3.behavior.drag()
+  var textDrag = d3.drag()
       .on('drag', function(d){
         var x = d3.event.x
         var y = d3.event.y
@@ -17,11 +17,11 @@ d3.swoopyDrag = function(){
 
         d3.select(this).call(translate, d.textOffset)
 
-        dispatch.drag()
+        dispatch.call('drag')
       })
-      .origin(function(d){ return {x: d.textOffset[0], y: d.textOffset[1]} })
+      .subject(function(d){ return {x: d.textOffset[0], y: d.textOffset[1]} })
 
-  var circleDrag = d3.behavior.drag()
+  var circleDrag = d3.drag()
       .on('drag', function(d){
         var x = d3.event.x
         var y = d3.event.y
@@ -40,17 +40,17 @@ d3.swoopyDrag = function(){
         parentSel.select('path').attr('d', path).datum().path = path
         d3.select(this).call(translate, d.pos)
 
-        dispatch.drag()
+        dispatch.call('drag')
       })
-      .origin(function(d){ return {x: d.pos[0], y: d.pos[1]} })
+      .subject(function(d){ return {x: d.pos[0], y: d.pos[1]} })
 
 
   var rv = function(sel){
-    annotationSel = sel.selectAll('g').data(annotations)
-    annotationSel.exit().remove()
-    annotationSel.enter().append('g')
-    annotationSel.call(translate, function(d){ return [x(d), y(d)] })
-    
+    annotationSel = sel.html('').selectAll('g')
+        .data(annotations).enter()
+      .append('g')
+        .call(translate, function(d){ return [x(d), y(d)] })
+
     var textSel = annotationSel.append('text')
         .call(translate, ƒ('textOffset'))
         .text(ƒ('text'))
@@ -67,8 +67,8 @@ d3.swoopyDrag = function(){
       var points = []
 
       if (~d.path.indexOf('A')){
-        //handle Arc paths seperatly -- only one circle supported
-        var pathNode = d3.select(this.parentNode).select('path').node()
+        //handle arc paths seperatly -- only one circle supported
+        var pathNode = d3.select(this).select('path').node()
         var l = pathNode.getTotalLength()
 
         points = [0, .5, 1].map(function(d){
@@ -96,11 +96,14 @@ d3.swoopyDrag = function(){
 
       return points
     }).enter().append('circle')
-        .attr({r: 8, fill: 'rgba(0,0,0,0)', stroke: '#333', 'stroke-dasharray': '2 2'})
+        .attr('r', 8)
+        .attr('fill', 'rgba(0,0,0,0)')
+        .attr('stroke', '#333')
+        .attr('stroke-dasharray', '2 2')
         .call(translate, ƒ('pos'))
         .call(circleDrag)
 
-    dispatch.drag()
+    dispatch.call('drag')
   }
 
 
@@ -124,8 +127,12 @@ d3.swoopyDrag = function(){
     draggable = _x
     return rv
   }
+  rv.on = function() {
+    var value = dispatch.on.apply(dispatch, arguments);
+    return value === dispatch ? rv : value;
+  }
 
-  return d3.rebind(rv, dispatch, 'on')
+  return rv
 
   //convert 3 points to an Arc Path 
   function calcCirclePath(points){

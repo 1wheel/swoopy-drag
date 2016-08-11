@@ -357,7 +357,7 @@ d3.tsv('lib/data.tsv', function(res){
   c.svg.appendMany(data, 'circle')
       .attr('cx', ƒ('sepalWidth', c.x))
       .attr('cy', ƒ('sepalLength', c.y))
-      .attr('fill', ƒ('species', c.color))
+      .attr('fill', ƒ('species', d3.scaleOrdinal(d3.schemeCategory10)))
       .attr('r', 5)
       .attr('stroke', '#000')
       .call(d3.attachTooltip)
@@ -398,7 +398,7 @@ d3.tsv('lib/data.tsv', function(res){
     var circles = r.svg.appendMany(data, 'circle')
         .attr('cx', ƒ('sepalWidth', r.x))
         .attr('cy', ƒ('sepalLength', r.y))
-        .attr('fill', ƒ('species', r.color))
+        .attr('fill', ƒ('species', d3.scaleOrdinal(d3.schemeCategory10)))
         .attr('r', 5)
         .attr('stroke', '#000')
         .call(d3.attachTooltip)
@@ -413,7 +413,7 @@ d3.tsv('lib/data.tsv', function(res){
     swoopySel.selectAll('text').style('fill', 'black')
 
 
-    resizer.call(d3.behavior.drag().on('drag', function(){
+    resizer.call(d3.drag().on('drag', function(){
       setWidth(d3.mouse(this.parentNode)[0])
     }))
 
