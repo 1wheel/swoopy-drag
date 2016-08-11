@@ -169,7 +169,7 @@ var swoopy = d3.swoopyDrag()
 
 <p>
 
-The shape of each annotation's line is determined by the <span class='mono'>path</span> property, the text by the <span class='mono'>text</span> property and the position of the text by the <span class='mono'>testOffset</span> property. Currently only <a href='https://www.w3.org/TR/SVG/paths.html#PathDataLinetoCommands'>straight paths</a> (paths of the form <m>M 0,0 L 10,10</m>) and <a href='https://www.w3.org/TR/SVG/paths.html#PathDataQuadraticBezierCommands'>béziers</a> (paths of the form <m>M 0,0 C 10,10 10,15, 20,15</m>) are supported—see my interactive path string <a href='http://roadtolarissa.com/blog/2015/02/22/svg-path-strings/'>tutorial</a> for more.
+The shape of each annotation's line is determined by the <span class='mono'>path</span> property, the text by the <span class='mono'>text</span> property and the position of the text by the <span class='mono'>testOffset</span> property. Currently only <a href='https://www.w3.org/TR/SVG/paths.html#PathDataLinetoCommands'>straight paths</a> (paths of the form <m>M 0,0 L 10,10</m>) and <a href='https://www.w3.org/TR/SVG/paths.html#PathDataQuadraticBezierCommands'>béziers</a> (paths of the form <m>M 0,0 C 10,10 10,15, 20,15</m>) and circular arcs are supported—see my interactive path string <a href='http://roadtolarissa.com/blog/2015/02/22/svg-path-strings/'>tutorial</a> for more details.
 </p>
 
 <p> The annotations are added to the page just like <m>d3.svg.axis</m> - append a new <m>group</m> element and use <m>call</m>:
@@ -254,6 +254,8 @@ Since the annotations are made up of selectable <m>path</m> and <m>group</m> ele
 <a href='http://roadtolarissa.com/nba-minutes/'>Minute by Minute Point Differentials</a>
 <br>
 <a href='http://roadtolarissa.com/nba-win-loss/'>NBA Win/Loss Records</a>
+<br>
+<a href='http://www.nytimes.com/interactive/2016/08/09/us/elections/Bush-Rubio-and-Kasich-Donors-give-to-Clinton.html'>Bush and Kasich Donors Give to Clinton</a>
 </p>
 
 
