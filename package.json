@@ -21,7 +21,7 @@
     "pretest": "rollup -f umd -n d3 -g d3:d3 -o swoopy-drag.js -- index.js",
     "test": "echo 'no tests'",
     "prepublish": "npm run test",
-    "postpublish": "zip -j build/d3-swoopy-drag.zip -- LICENSE README.md build/d3-swoopy-drag.js"
+    "postpublish": "zip -j d3-swoopy-drag.zip -- LICENSE README.md d3-swoopy-drag.js"
   },
   "devDependencies": {
     "rollup": "0.27",
