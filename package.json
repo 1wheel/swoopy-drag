@@ -1,0 +1,34 @@
+{
+  "name": "d3-swoopy-drag",
+  "version": "0.0.1",
+  "description": "Artisanal label placement for d3 graphics.",
+  "keywords": [
+    "d3",
+    "d3-module",
+    "annotation",
+    "drag"
+  ],
+  "license": "MIT",
+  "main": "swoopy-drag.js",
+  "author": "Adam Pearce",
+  "jsnext:main": "index",
+  "homepage": "http://1wheel.github.io/swoopy-drag/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/1wheel/swoopy-drag.git"
+  },
+  "scripts": {
+    "pretest": "rollup -f umd -n d3 -g d3:d3 -o swoopy-drag.js -- index.js",
+    "test": "echo 'no tests'",
+    "prepublish": "npm run test",
+    "postpublish": "zip -j build/d3-swoopy-drag.zip -- LICENSE README.md build/d3-swoopy-drag.js"
+  },
+  "devDependencies": {
+    "rollup": "0.27",
+    "tape": "4",
+    "uglify-js": "2"
+  },
+  "dependencies": {
+    "d3": "4"
+  }
+}
