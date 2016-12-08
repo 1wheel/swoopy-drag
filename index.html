@@ -88,7 +88,7 @@ div.tooltip {
   padding: .05em;
   padding-left: .2em;
   padding-right: .2em;
-  border-radius: 6px;
+  border-radius: 2px;
 }
 
 p{
@@ -103,7 +103,7 @@ pre{
   margin: 0px;
   margin-left: 150px;
   padding-left: 15px;
-  border-left: 2px solid #ccc;
+  border-left: 1px solid #ccc;
 }
 
 
@@ -157,7 +157,7 @@ a{
 </div>
 
 <p>
-The <span class='mono'>x</span> and <span class='mono'>y</span> functions are called on each annotation to determine its position. Setting <m>draggable</m> to <m>true</m> adds control points to the path strings and enables label dragging - turn on while developing and off when you're ready to publish.
+The <span class='mono'>x</span> and <span class='mono'>y</span> functions are called on each annotation to determine its position. In the annotations array here, <span class='mono'>xVal</span> and <span class='mono'>yVal</span> properties are the data values of point the annotation refers to. The functions passed to <span class='mono'>x</span> and <span class='mono'>y</span> look up these values and encode them as pixel position using scales you've probably set up elsewhere.
 
 <pre>
 var swoopy = d3.swoopyDrag()
@@ -168,8 +168,10 @@ var swoopy = d3.swoopyDrag()
 </pre>
 
 <p>
+Setting <m>draggable</m> to <m>true</m> adds control points to the path strings and enables label dragging - turn on while developing and off when you're ready to publish.
 
-The shape of each annotation's line is determined by the <span class='mono'>path</span> property, the text by the <span class='mono'>text</span> property and the position of the text by the <span class='mono'>testOffset</span> property. Currently only <a href='https://www.w3.org/TR/SVG/paths.html#PathDataLinetoCommands'>straight paths</a> (paths of the form <m>M 0,0 L 10,10</m>) and <a href='https://www.w3.org/TR/SVG/paths.html#PathDataQuadraticBezierCommands'>béziers</a> (paths of the form <m>M 0,0 C 10,10 10,15, 20,15</m>) and circular arcs are supported—see my interactive path string <a href='http://roadtolarissa.com/blog/2015/02/22/svg-path-strings/'>tutorial</a> for more details.
+<p>
+The shape of each annotation's line is determined by the <span class='mono'>path</span> property, the text by the <span class='mono'>text</span> property and the position of the text by the <span class='mono'>testOffset</span> property. Currently only <a href='https://www.w3.org/TR/SVG/paths.html#PathDataLinetoCommands'>straight paths</a> (paths of the form <m>M 0,0 L 10,10</m>), <a href='https://www.w3.org/TR/SVG/paths.html#PathDataQuadraticBezierCommands'>béziers</a> (paths of the form <m>M 0,0 C 10,10 10,15, 20,15</m>) and circular arcs are supported—see my interactive path string <a href='http://roadtolarissa.com/blog/2015/02/22/svg-path-strings/'>tutorial</a> for more details.
 </p>
 
 <p> The annotations are added to the page just like <m>d3.svg.axis</m> - append a new <m>group</m> element and use <m>call</m>:
@@ -251,6 +253,8 @@ Since the annotations are made up of selectable <m>path</m> and <m>group</m> ele
 
 <h3>Examples</h3>
 <p style='line-height: 2.8em;'>
+<a href='http://bl.ocks.org/1wheel/68073eeba4d19c454a8c25fcd6e9e68a'>d3-module-faces</a>
+<br>
 <a href='http://roadtolarissa.com/nba-minutes/'>Minute by Minute Point Differentials</a>
 <br>
 <a href='http://roadtolarissa.com/nba-win-loss/'>NBA Win/Loss Records</a>
