@@ -1,6 +1,6 @@
 {
   "name": "d3-swoopy-drag",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Artisanal label placement for d3 graphics.",
   "keywords": [
     "d3",
@@ -12,6 +12,7 @@
   "main": "swoopy-drag.js",
   "author": "Adam Pearce",
   "jsnext:main": "index",
+  "module": "index",
   "homepage": "http://1wheel.github.io/swoopy-drag/",
   "repository": {
     "type": "git",
