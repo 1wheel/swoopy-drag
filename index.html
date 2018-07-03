@@ -301,9 +301,10 @@ var annotations = [
     "sepalLength": 5.7,
     "path": "M-49,-61L-6,-8",
     "text": "Setosa",
+    "class": "highlight-label",
     "textOffset": [
-      -83,
-      -65
+      -70,
+      -75
     ]
   },
   {
@@ -391,6 +392,9 @@ d3.tsv('lib/data.tsv', function(res){
 
   swoopySel.selectAll('path')
       .attr('marker-end', 'url(#arrow)')
+
+  swoopySel.selectAll('.highlight-label text')
+      .attr('font-weight','bold');
 
   // swoopySel.selectAll('text')
   //     .each(function(d){

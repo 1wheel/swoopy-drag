@@ -51,6 +51,7 @@ export function swoopyDrag(){
     annotationSel = sel.html('').selectAll('g')
         .data(annotations).enter()
       .append('g')
+        .attr('class', function(d) { return d.class })
         .call(translate, function(d){ return [x(d), y(d)] })
 
     var textSel = annotationSel.append('text')
