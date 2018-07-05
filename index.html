@@ -18,7 +18,7 @@ h1, h3{
 }
 
 h3{
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 svg{
@@ -101,7 +101,7 @@ p{
 pre{
   font-size: 14px;
   margin: 0px;
-  margin-left: 150px;
+  margin-left: 136px;
   padding-left: 15px;
   border-left: 1px solid #ccc;
 }
@@ -161,10 +161,10 @@ The <span class='mono'>x</span> and <span class='mono'>y</span> functions are ca
 
 <pre>
 var swoopy = d3.swoopyDrag()
-    .x(function(d){ return xScale(d.sepalWidth) })
-    .y(function(d){ return yScale(d.sepalLength) })
-    .draggable(true)
-    .annotations(annotations)
+  .x(d => xScale(d.sepalWidth))
+  .y(d => yScale(d.sepalLength))
+  .draggable(true)
+  .annotations(annotations)
 </pre>
 
 <p>
@@ -240,15 +240,38 @@ swoopySel.selectAll('path').attr('marker-end', 'url(#arrow)')
 
 <pre>
 swoopySel.selectAll('text')
-    .each(function(d){
-      d3.select(this)
-          .text('')                        //clear existing text
-          .tspans(d3.wordwrap(d.text, 20)) //wrap after 20 char
-    })  
+  .each(function(d){
+    d3.select(this)
+      .text('')                        //clear existing text
+      .tspans(d3.wordwrap(d.text, 20)) //wrap after 20 char
+  })  
 </pre>
 
 <p>
-Since the annotations are made up of selectable <m>path</m> and <m>group</m> elements, they can be styled differently. 
+
+<h3>Styling</h3>
+
+<p>On the page, annotations are made up of a <m>group</m> containing a <m>path</m> and a <m>text</m> element. Annotation data is bound to them, making it possible to control the style of individual annotations. 
+
+<p>To customize the color of the text you could add a <m>textColor</m> property to the annotation data and use it to set the <m>fill</m> of the <m>text</m>:
+
+<pre>
+swoopySel.selectAll('text').style('fill', d => d.textColor || '#000')
+</pre>
+
+<p>Or you could add a <m>highlight</m> class to some of the annotations:
+
+<pre>
+swoopySel.selectAll('g').attr('class', d => d.class)
+</pre>
+
+<p>And emphasize them with css:
+
+<pre>
+g.highlight text{ font-weight: 700; }
+g.highlight path{ stroke-width: 2; }
+</pre>
+
 
 
 <h3>Examples</h3>
@@ -273,7 +296,7 @@ Since the annotations are made up of selectable <m>path</m> and <m>group</m> ele
   <br>
   <a href='http://nytimes.github.io/svg-crowbar/'>svg-crowbar</a> lets you export a <m>svg</m> file and add annotations manually.
   <br>
-  <a href='http://ai2html.org/'>ai2html</a> illustrator script that creates responsive <m>html</m>. 
+  <a href='http://ai2html.org/'>ai2html</a> is an illustrator script that creates responsive <m>html</m>. 
   <br>
 </P>
 

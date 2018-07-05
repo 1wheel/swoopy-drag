@@ -1,6 +1,6 @@
 {
   "name": "d3-swoopy-drag",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Artisanal label placement for d3 graphics.",
   "keywords": [
     "d3",
@@ -26,8 +26,7 @@
   },
   "devDependencies": {
     "rollup": "0.27",
-    "tape": "4",
-    "uglify-js": "2"
+    "tape": "4"
   },
   "dependencies": {
     "d3": "4"
